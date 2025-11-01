@@ -1,4 +1,4 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 import { MaxLength } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
@@ -44,8 +44,7 @@ export class UpdatePeopleDto {
   gender: string;
 
   @IsOptional()
-  @IsString()
-  @MaxLength(100)
+  @IsNumber()
   homeworld_id: number;
 
   @IsOptional()

@@ -44,26 +44,14 @@ export class People {
   @JoinColumn({ name: 'homeworld_id' })
   homeworld: Planets;
 
-  @ManyToMany(() => Films, (film) => film.p)
-  @JoinTable({
-    schema: 'films',
-    name: 'films_characters',
-    joinColumn: {
-      name: 'film_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'character_id',
-      referencedColumnName: 'id',
-    },
-  })
+  @ManyToMany(() => Films, (films) => films.characters)
   films: Films[];
 
-  @ManyToMany(() => Species, (specie) => specie.p)
+  @ManyToMany(() => Species, (species) => species.people)
   @JoinTable({
     name: 'people_species',
     joinColumn: {
-      name: 'species_id',
+      name: 'specie_id',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
@@ -73,7 +61,7 @@ export class People {
   })
   species: Species[];
 
-  @ManyToMany(() => Vehicles, (vehicle) => vehicle.p)
+  @ManyToMany(() => Vehicles, (vehicles) => vehicles.pilotes)
   @JoinTable({
     name: 'people_vehicles',
     joinColumn: {
@@ -87,7 +75,7 @@ export class People {
   })
   vehicles: Vehicles[];
 
-  @ManyToMany(() => Starships, (starships) => starships.p)
+  @ManyToMany(() => Starships, (starships) => starships.pilotes)
   @JoinTable({
     name: 'people_starships',
     joinColumn: {
@@ -100,24 +88,4 @@ export class People {
     },
   })
   starships: Starships[];
-
-  //зворотні зв'язки
-  //films
-  @ManyToMany(() => Films, (film) => film.characters)
-  f: Films[];
-
-  //planets
-  @ManyToMany(() => Planets, (planet) => planet.residents)
-  pl: Planets[];
-
-  //species
-  @ManyToMany(() => Species, (species) => species.people)
-  sp: Species[];
-
-  //starships
-  @ManyToMany(() => Starships, (starships) => starships.pilotes)
-  st: Starships[];
-
-  @ManyToMany(() => Vehicles, (vehicles) => vehicles.pilotes)
-  veh: Vehicles[];
 }

@@ -5,13 +5,40 @@ import { Repository } from 'typeorm';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
+/**
+ *class for working with vehicle entity
+ */
 @Injectable()
 export class VehicleService {
-  constructor(@InjectRepository(Vehicles) private VehicleRepository: Repository<Vehicles>) {}
+  constructor(@InjectRepository(Vehicles) private vehicleRepository: Repository<Vehicles>) {}
 
+  /**
+   * the function gets all records in database from vehicles table
+   * @returns array of entities vehicles sorted by id growing
+   */
+  async getAll(): Promise<Vehicles[]> {
+    return await this.vehicleRepository.find({ order: { id: 'ASC' }, relations: ['pilotes', 'films'] });
+  }
+
+  /**
+   * function gets one records in database from vehicles table, if id mathc
+   * @param id vehicle id
+   * @returns vehicle entity if id exist in database, null if no id-match
+   */
+  async getOne(id: number): Promise<Vehicles | null> {
+    return await this.vehicleRepository.findOne({ where: { id }, relations: ['pilotes', 'films'] });
+  }
+
+  /**
+   * function return several records in database from vehicles table,
+   * if pagination parameters are not specified, default parameters are used
+   * @param page page numebr
+   * @param limit number of objects on page
+   * @returns array of vehicles entity
+   */
   async getSeveral(page: number, limit: number): Promise<Vehicles[]> {
     const skip = (page - 1) * limit;
-    return await this.VehicleRepository.find({
+    return await this.vehicleRepository.find({
       skip: skip,
       take: limit,
       order: { id: 'ASC' },
@@ -19,24 +46,31 @@ export class VehicleService {
     });
   }
 
-  async findAll(): Promise<Vehicles[]> {
-    return await this.VehicleRepository.find({ relations: ['pilotes', 'films'] });
-  }
-
-  async findOne(id: number): Promise<Vehicles | null> {
-    return await this.VehicleRepository.findOne({ where: { id }, relations: ['pilotes', 'films'] });
-  }
-
+  /**
+   *function creates a new instance of the Vehicles class.
+   * First, the received input parameters are unpacked, an images array is added to them,
+   * and a new instance of the Vehicles class is created.
+   * Then the instance is written to the database.
+   * @param vehicle object with new film data
+   */
   async create(vehicle: CreateVehicleDto): Promise<Vehicles> {
-    const newVehicleEntity: Vehicles = this.VehicleRepository.create({
+    const newVehicleEntity: Vehicles = this.vehicleRepository.create({
       ...vehicle,
       images: [],
     });
 
-    return await this.VehicleRepository.save(newVehicleEntity);
+    return await this.vehicleRepository.save(newVehicleEntity);
   }
+
+  /**
+   * functio changes data in a record in the vehicles table.
+   * data replacement is performed by unpacking the record found in the database and the input parameter
+   * @param id vehicle id
+   * @param updateDto object with fields to be replaced
+   * @returns object with replaced fields, null if no record with the matching id was found
+   */
   async update(id: number, updateDto: UpdateVehicleDto): Promise<Vehicles | null> {
-    const existing = await this.VehicleRepository.findOneBy({ id });
+    const existing = await this.vehicleRepository.findOneBy({ id });
     if (!existing) return null;
 
     const update = {
@@ -44,26 +78,44 @@ export class VehicleService {
       ...updateDto,
     };
 
-    return await this.VehicleRepository.save(update);
+    return await this.vehicleRepository.save(update);
   }
 
+  /**
+   * function deletes a record in the vehicles table
+   * @param id ID of the vehicle to be deleted
+   * @returns true if the deletion is successful, false if not
+   */
   async delete(id: number): Promise<boolean> {
-    const result = await this.VehicleRepository.delete(id);
+    const result = await this.vehicleRepository.delete(id);
     return result.affected !== 0;
   }
 
-  async saveImageName(id: number, file: Express.Multer.File) {
-    const vehicle = await this.VehicleRepository.findOneBy({ id });
+  /**
+   * function adds image references to the vehicles images array
+   * @param id vehicle id
+   * @param url link to the picture
+   * @returns true if the link is added to the array, false if not
+   */
+  async saveImage(id: number, url: string) {
+    const vehicle = await this.vehicleRepository.findOneBy({ id });
     if (!vehicle) {
-      throw new Error('Id is not exist!');
+      throw new Error(`Vehicle with id ${id} does not exist!`);
     }
 
-    vehicle.images.push(file.filename);
-
-    const result = await this.VehicleRepository.update(id, vehicle);
-
-    if (result.affected) {
-      return result.affected > 0;
+    if (!vehicle.images) {
+      vehicle.images = [];
     }
+    vehicle.images.push(url);
+
+    const result = await this.vehicleRepository.update(id, vehicle);
+    if (!result.affected) {
+      throw new Error('Failed to add image link to database!');
+    }
+    return result.affected > 0;
+  }
+
+  async itExist(id: number): Promise<boolean> {
+    return await this.vehicleRepository.exists({ where: { id } });
   }
 }

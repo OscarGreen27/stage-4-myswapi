@@ -1,153 +1,129 @@
-import { Controller, UseInterceptors, UploadedFile, Post, Param, NotFoundException, Get, ParseIntPipe, Res, Delete } from '@nestjs/common';
+import {
+  Controller,
+  UseInterceptors,
+  UploadedFile,
+  Post,
+  Param,
+  NotFoundException,
+  ParseIntPipe,
+  Get,
+  Delete,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
 
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import * as path from 'path';
-import * as fs from 'fs';
-import { Response } from 'express';
+import * as multer from 'multer';
 
-import { PeopleService } from 'src/entities/people/people.service';
-import { FilmService } from 'src/entities/film/film.service';
-import { PlanetService } from 'src/entities/planet/planet.service';
-import { SpecieService } from 'src/entities/specie/specie.service';
-import { StarshipService } from 'src/entities/starship/starship.service';
-import { VehicleService } from 'src/entities/vehicle/vehicle.service';
+import { S3Service } from './s3.service';
+import { ImagesService } from './images.service';
+import { Roles } from 'src/decorators/role.decorator';
+import { Role } from 'src/enum/role.enum';
+import { AuthGuard } from 'src/auth/guards/auth.guards';
+import { RoleGuard } from 'src/auth/guards/role.guards';
 
-import { UploadImageHandler, GetImageHandler, UpdateImageHandler } from 'src/types/custom.type';
-
+/**
+ *images endpoint request handler class
+ */
+@ApiBearerAuth()
+@UseGuards(AuthGuard, RoleGuard)
 @Controller('images')
 export class ImagesController {
-  readonly entities: {
-    upload: UploadImageHandler;
-    getOne: GetImageHandler;
-    update: UpdateImageHandler;
-  };
   constructor(
-    private readonly peopleService: PeopleService,
-    private readonly filmService: FilmService,
-    private readonly planetService: PlanetService,
-    private readonly specieService: SpecieService,
-    private readonly starshipService: StarshipService,
-    private readonly vehicleService: VehicleService,
-  ) {
-    this.entities = {
-      upload: {
-        film: this.filmService.saveImage.bind(this.filmService),
-        people: this.peopleService.saveImage.bind(this.peopleService),
-        planet: this.planetService.saveImage.bind(this.planetService),
-        specie: this.specieService.saveImage.bind(this.specieService),
-        starship: this.starshipService.saveImageName.bind(this.starshipService),
-        vehicle: this.vehicleService.saveImageName.bind(this.vehicleService),
-      },
-      getOne: {
-        film: this.filmService.findOne.bind(this.filmService),
-        people: this.peopleService.findOne.bind(this.peopleService),
-        planet: this.planetService.findOne.bind(this.planetService),
-        specie: this.specieService.findOne.bind(this.specieService),
-        starship: this.starshipService.findOne.bind(this.starshipService),
-        vehicle: this.vehicleService.findOne.bind(this.vehicleService),
-      },
-      update: {
-        film: this.filmService.update.bind(this.filmService),
-        people: this.peopleService.update.bind(this.peopleService),
-        planet: this.planetService.update.bind(this.planetService),
-        specie: this.specieService.update.bind(this.specieService),
-        starship: this.starshipService.update.bind(this.starshipService),
-        vehicle: this.vehicleService.update.bind(this.vehicleService),
-      },
-    };
-  }
+    private readonly s3Service: S3Service,
+    private readonly imagesService: ImagesService,
+  ) {}
 
+  /**
+   * function handler for post method to add images.
+   * uses interceptor to get image from request.
+   * received image is stored in memory, then sent to AWS bucket,
+   * link which returns and ves is stored in database
+   * @param id entity id
+   * @param type entity type
+   * @param file file attached to the request
+   * @returns
+   */
   @Post('/upload/:type/:id')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: (req, file, callback) => {
-          const id = Number(req.params['id']);
-          const type = req.params['type'];
-          if (isNaN(id)) {
-            throw new Error('Id is invalid!');
-          }
-          const uploadPath = path.join(process.cwd(), 'uploads', `${type}`, `${id}`);
-
-          if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-          }
-
-          callback(null, uploadPath);
-        },
-        filename: (req, file, callback) => {
-          const splitedOriginslName = file.originalname.split('.');
-
-          const newName = `${Date.now()}_${Math.floor(Math.random() * 1e6)}.${splitedOriginslName[1]}`;
-          callback(null, newName);
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('file', { storage: multer.memoryStorage() }))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
+        file: { type: 'string', format: 'binary' },
       },
     },
   })
-  async uploadImage(@Param('id') id: number, @Param('type') type: string, @UploadedFile() file: Express.Multer.File) {
-    if (!(type in this.entities.upload)) throw new NotFoundException();
-
-    const updateResult = await this.entities.upload[type](id, file);
-    if (updateResult) {
-      return JSON.stringify({ ok: true });
+  @Roles(Role.Admin)
+  async uploadImage(@Param('id', ParseIntPipe) id: number, @Param('type') type: string, @UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new NotFoundException('File not transferred!');
     }
-    return JSON.stringify({ ok: false });
+
+    const existStatus = await this.imagesService.checkExisting(id, type);
+    if (!existStatus) {
+      throw new NotFoundException(`Film with id ${id} is note exist!`);
+    }
+
+    const url = await this.s3Service.uploadFile(file, type, id);
+    const saveResult = await this.imagesService.saveToDb(id, type, url);
+    if (!saveResult) {
+      return { ok: false };
+    }
+    return { ok: true, url };
   }
 
+  /**
+   * get request handler function
+   * @param type entity type
+   * @param id entity id
+   * @returns array of images links
+   */
   @Get('/:type/:id')
-  async getImages(@Param('id', ParseIntPipe) id: number, @Param('type') type: string) {
-    const entity = await this.entities.getOne[type](id);
-    if (!entity) throw new NotFoundException();
-
-    const images = entity.images;
-
-    if (!images) throw new NotFoundException();
-
-    return images;
+  @Roles(Role.Admin, Role.User)
+  async getImages(@Param('type') type: string, @Param('id', ParseIntPipe) id: number) {
+    const result = await this.imagesService.getEntityByType(type, id);
+    if (!result || !result.images) {
+      throw new NotFoundException('Entity is not found or images array is null!');
+    }
+    return result.images;
   }
 
-  @Get('/:type/:id/:fileName')
-  async getImage(@Param('id', ParseIntPipe) id: number, @Param('type') type: string, @Param('fileName') fileName: string, @Res() res: Response) {
-    if (!(type in this.entities.getOne)) throw new NotFoundException('Invalid type entiti!');
+  /**
+   * function handler method delete.
+   * deletes the image from the AWS bucket and removes the link to the image from the bd array
+   * @param type entity type
+   * @param id entyti id
+   * @param url images url
+   * @returns object with status and deleted link
+   */
+  @Delete('/:type/:id/:fileUrl')
+  @ApiBody({ type: String })
+  @Roles(Role.Admin)
+  async deleteImage(@Param('type') type: string, @Param('id', ParseIntPipe) id: number, @Body('url') url: string) {
+    if (!url) {
+      throw new NotFoundException('Image URL must be provide in body!');
+    }
+    const entity = await this.imagesService.getEntityByType(type, id);
+    if (!entity || !entity.images) {
+      throw new NotFoundException('Entity is not found or images array is null!');
+    }
 
-    const entity = await this.entities.getOne[type](id);
-    if (!entity) throw new NotFoundException();
+    const hasImage = entity.images.includes(url);
+    if (!hasImage) {
+      throw new NotFoundException('The image link passed does not belong to this entity!');
+    }
 
-    const filePath = path.join(process.cwd(), `uploads/${type}/${id}/${fileName}`);
-    res.sendFile(filePath);
-  }
+    const key = this.imagesService.extractS3KeyFromUrl(url);
 
-  @Delete('/delete/:type/:id/:fileName')
-  async deleteImage(@Param('id', ParseIntPipe) id: number, @Param('type') type: string, @Param('fileName') fileName: string) {
-    if (!(type in this.entities.getOne)) throw new NotFoundException('Invalid type entiti!');
-    const entity = await this.entities.getOne[type](id);
+    await this.s3Service.deleteFile(key);
 
-    if (!entity) throw new NotFoundException(`The ${type} from the ${id} was not found.`);
+    entity.images = entity.images.filter((img) => img != url);
 
-    if (!entity.images.includes(fileName)) throw new NotFoundException(`${fileName} does not belong to the ${type} with ID: ${id}`);
-    entity.images = entity.images.filter((img) => {
-      if (img !== fileName) return img;
-    });
+    await this.imagesService.updateEntityByType(type, id, entity);
 
-    await this.entities.update[type](id, entity);
-
-    fs.unlink(path.join(process.cwd(), 'uploads', `${type}`, String(id), fileName), (err) => {
-      if (err) throw err;
-      console.log(`File: ${fileName} was deleted!`);
-    });
+    return { ok: true, deletedUrl: url };
   }
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
 import { Films } from '../film/film.entity';
 import { People } from '../people/people.entity';
 
@@ -49,42 +49,9 @@ export class Starships {
   @Column('text', { array: true, nullable: true })
   images: string[];
 
-  @ManyToMany(() => People, (people) => people.st)
-  @JoinTable({
-    schema: 'people',
-    name: 'people_starships',
-    joinColumn: {
-      name: 'starship_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'person_id',
-      referencedColumnName: 'id',
-    },
-  })
+  @ManyToMany(() => People, (people) => people.starships)
   pilotes: People[];
 
-  @ManyToMany(() => Films, (films) => films.st)
-  @JoinTable({
-    schema: 'films',
-    name: 'films_starships',
-    joinColumn: {
-      name: 'starship_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'film_id',
-      referencedColumnName: 'id',
-    },
-  })
+  @ManyToMany(() => Films, (films) => films.starships)
   films: Films[];
-
-  //зворотні зв'язки
-  //films
-  // @ManyToMany(() => Films, (films) => films.starships)
-  // f: Starships[];
-
-  //people
-  @ManyToMany(() => People, (people) => people.starships)
-  p: People[];
 }

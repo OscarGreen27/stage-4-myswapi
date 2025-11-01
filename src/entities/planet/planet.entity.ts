@@ -37,7 +37,7 @@ export class Planets {
   @Column('text', { array: true, nullable: true })
   images: string[];
 
-  @ManyToMany(() => People, (people) => people.pl)
+  @ManyToMany(() => People)
   @JoinTable({
     name: 'planet_residents',
     joinColumn: {
@@ -51,19 +51,19 @@ export class Planets {
   })
   residents: People[];
 
-  @ManyToMany(() => Films, (film) => film.pl)
-  @JoinTable({
-    schema: 'films',
-    name: 'films_planets',
-    joinColumn: {
-      name: 'planet_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'film_id',
-      referencedColumnName: 'id',
-    },
-  })
+  @ManyToMany(() => Films, (films) => films.planets)
+  // @JoinTable({
+  //   schema: 'films',
+  //   name: 'films_planets',
+  //   joinColumn: {
+  //     name: 'planet_id',
+  //     referencedColumnName: 'id',
+  //   },
+  //   inverseJoinColumn: {
+  //     name: 'film_id',
+  //     referencedColumnName: 'id',
+  //   },
+  // })
   films: Films[];
 
   //зворотні зв'язки

@@ -31,8 +31,7 @@ export class Films {
   @Column('text', { array: true, nullable: true })
   images: string[];
 
-  //, (people) => people.f
-  @ManyToMany(() => People)
+  @ManyToMany(() => People, (character) => character.films)
   @JoinTable({
     name: 'films_characters',
     joinColumn: {
@@ -46,80 +45,59 @@ export class Films {
   })
   characters: People[];
 
-  // @ManyToMany(() => Planets, (planet) => planet.f)
-  // @JoinTable({
-  //   name: 'films_planets',
-  //   joinColumn: {
-  //     name: 'film_id',
-  //     referencedColumnName: 'id',
-  //   },
-  //   inverseJoinColumn: {
-  //     name: 'planet_id',
-  //     referencedColumnName: 'id',
-  //   },
-  // })
-  // planets: Planets[];
+  @ManyToMany(() => Planets, (planets) => planets.films)
+  @JoinTable({
+    name: 'films_planets',
+    joinColumn: {
+      name: 'film_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'planet_id',
+      referencedColumnName: 'id',
+    },
+  })
+  planets: Planets[];
 
-  // @ManyToMany(() => Species, (specie) => specie.f)
-  // @JoinTable({
-  //   name: 'films_species',
-  //   joinColumn: {
-  //     name: 'film_id',
-  //     referencedColumnName: 'id',
-  //   },
-  //   inverseJoinColumn: {
-  //     name: 'specie_id',
-  //     referencedColumnName: 'id',
-  //   },
-  // })
-  // species: Species[];
-
-  // @ManyToMany(() => Starships, (starship) => starship.films)
-  // @JoinTable({
-  //   name: 'films_starships',
-  //   joinColumn: {
-  //     name: 'film_id',
-  //     referencedColumnName: 'id',
-  //   },
-  //   inverseJoinColumn: {
-  //     name: 'starship_id',
-  //     referencedColumnName: 'id',
-  //   },
-  // })
-  // starships: Starships[];
-
-  // @ManyToMany(() => Vehicles, (vehicle) => vehicle.f)
-  // @JoinTable({
-  //   name: 'films_vehicles',
-  //   joinColumn: {
-  //     name: 'film_id',
-  //     referencedColumnName: 'id',
-  //   },
-  //   inverseJoinColumn: {
-  //     name: 'vehicle_id',
-  //     referencedColumnName: 'id',
-  //   },
-  // })
-  // vehicles: Vehicles[];
-
-  //зворотні зв'язки
-  //people
-  @ManyToMany(() => People, (people) => people.films)
-  p: People[];
-
-  //planets
-  @ManyToMany(() => Planets, (planet) => planet.films)
-  pl: Planets[];
-
-  //species
   @ManyToMany(() => Species, (species) => species.films)
-  sp: Species[];
+  @JoinTable({
+    name: 'films_species',
+    joinColumn: {
+      name: 'film_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'specie_id',
+      referencedColumnName: 'id',
+    },
+  })
+  species: Species[];
 
-  //starships
   @ManyToMany(() => Starships, (starships) => starships.films)
-  st: Films[];
+  @JoinTable({
+    name: 'films_starships',
+    joinColumn: {
+      name: 'film_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'starship_id',
+      referencedColumnName: 'id',
+    },
+  })
+  starships: Starships[];
 
-  //vehicles
   @ManyToMany(() => Vehicles, (vehicles) => vehicles.films)
-  veh: Vehicles[];
+  @JoinTable({
+    name: 'films_vehicles',
+    joinColumn: {
+      name: 'film_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'vehicle_id',
+      referencedColumnName: 'id',
+    },
+  })
+  vehicles: Vehicles[];
 }

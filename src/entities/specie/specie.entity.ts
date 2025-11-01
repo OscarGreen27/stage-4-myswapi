@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinColumn, OneToOne, JoinTable } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinColumn, OneToOne } from 'typeorm';
 import { Films } from '../film/film.entity';
 import { People } from '../people/people.entity';
 import { Planets } from '../planet/planet.entity';
@@ -45,42 +45,9 @@ export class Species {
   @JoinColumn({ name: 'homeworld_id' })
   homeworld: Planets;
 
-  @ManyToMany(() => People, (people) => people.sp)
-  @JoinTable({
-    schema: 'people',
-    name: 'people_species',
-    joinColumn: {
-      name: 'species_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'person_id',
-      referencedColumnName: 'id',
-    },
-  })
+  @ManyToMany(() => People, (people) => people.species)
   people: People[];
 
-  @ManyToMany(() => Films, (films) => films.sp)
-  @JoinTable({
-    schema: 'films',
-    name: 'films_species',
-    joinColumn: {
-      name: 'specie_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'film_id',
-      referencedColumnName: 'id',
-    },
-  })
+  @ManyToMany(() => Films, (films) => films.species)
   films: Films[];
-
-  //зворотні зв'язки
-  //films
-  // @ManyToMany(() => Films, (films) => films.species)
-  // f: Films[];
-
-  //people
-  @ManyToMany(() => People, (people) => people.species)
-  p: People[];
 }

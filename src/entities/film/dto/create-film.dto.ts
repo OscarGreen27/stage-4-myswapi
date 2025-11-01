@@ -24,16 +24,4 @@ export class CreateFilmDto {
   @IsDate()
   @Type(() => Date)
   release_date: Date;
-
-  @IsNumber()
-  planet_id: number[];
-
-  @IsNumber()
-  specie_id: number[];
-
-  @IsNumber()
-  starship_id: number[];
-
-  @IsNumber()
-  vehicle_id: number[];
 }
