@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Species } from './specie.entity';
 import { Repository } from 'typeorm';
@@ -112,6 +112,15 @@ export class SpecieService {
       throw new Error('Failed to add image link to database!');
     }
     return result.affected > 0;
+  }
+
+  async getImages(id: number) {
+    const exist = await this.itExist(id);
+    if (!exist) {
+      throw new NotFoundException(`Starship with id: ${id} is not exist!`);
+    }
+    const specie = await this.specieRepository.findOne({ where: { id }, select: ['images'] });
+    return specie?.images || [];
   }
 
   async itExist(id: number): Promise<boolean> {

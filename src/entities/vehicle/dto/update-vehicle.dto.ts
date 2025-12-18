@@ -1,4 +1,4 @@
-import { IsString, IsOptional, MaxLength } from 'class-validator';
+import { IsString, IsOptional, MaxLength, IsArray } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -85,4 +85,8 @@ export class UpdateVehicleDto {
   @IsString()
   @MaxLength(24)
   vehicle_class: string;
+
+  @IsOptional()
+  @IsArray()
+  images: string[];
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Starships } from './starship.entity';
 import { Repository } from 'typeorm';
@@ -119,5 +119,14 @@ export class StarshipService {
 
   async itExist(id: number): Promise<boolean> {
     return await this.starshipRepository.exists({ where: { id } });
+  }
+
+  async getImages(id: number) {
+    const exist = await this.itExist(id);
+    if (!exist) {
+      throw new NotFoundException(`Starship with id: ${id} is not exist!`);
+    }
+    const starship = await this.starshipRepository.findOne({ where: { id }, select: ['images'] });
+    return starship?.images || [];
   }
 }

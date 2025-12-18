@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsArray, IsOptional, IsString, MaxLength } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 export class UpdatePlanetDto {
@@ -58,4 +58,8 @@ export class UpdatePlanetDto {
   @IsString()
   @MaxLength(10)
   population: string;
+
+  @IsOptional()
+  @IsArray()
+  images: string[];
 }

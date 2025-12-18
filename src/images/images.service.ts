@@ -32,20 +32,20 @@ export class ImagesService {
    * @param id entity id
    * @returns entity
    */
-  async getEntityByType(type: string, id: number) {
+  async getEntityImagesByType(type: string, id: number) {
     switch (type) {
       case 'people':
-        return await this.peopleService.getOne(id);
+        return await this.peopleService.getImages(id);
       case 'films':
-        return await this.filmService.getOne(id);
+        return await this.filmService.getImages(id);
       case 'planets':
-        return await this.planetService.getOne(id);
+        return await this.planetService.getImages(id);
       case 'species':
-        return await this.specieService.getOne(id);
+        return await this.specieService.getImages(id);
       case 'starships':
-        return await this.starshipService.getOne(id);
+        return await this.starshipService.getImages(id);
       case 'vehicles':
-        return await this.vehicleService.getOne(id);
+        return await this.vehicleService.getImages(id);
       default:
         throw new NotFoundException(`${type} is invalid entity type!`);
     }
@@ -120,25 +120,36 @@ export class ImagesService {
    * @param entity object with updated fields
    * @returns updated entity
    */
-  async updateEntityByType(
-    type: string,
+  async updateEntityImages(
     id: number,
-    entity: UpdatePeopleDto | UpdateFilmDto | UpdatePlanetDto | UpdateSpecieDto | UpdateStarshipDto | UpdateVehicleDto,
+    type: string,
+    images: string[],
+    //entity: UpdatePeopleDto | UpdateFilmDto | UpdatePlanetDto | UpdateSpecieDto | UpdateStarshipDto | UpdateVehicleDto,
   ) {
-    if (entity instanceof UpdatePeopleDto) {
-      return await this.peopleService.update(id, entity);
-    } else if (entity instanceof UpdateFilmDto) {
-      return await this.filmService.update(id, entity);
-    } else if (entity instanceof UpdatePlanetDto) {
-      return await this.planetService.update(id, entity);
-    } else if (entity instanceof UpdateSpecieDto) {
-      return this.specieService.update(id, entity);
-    } else if (entity instanceof UpdateStarshipDto) {
-      return this.starshipService.update(id, entity);
-    } else if (entity instanceof UpdateVehicleDto) {
-      return this.vehicleService.update(id, entity);
-    } else {
-      throw new NotFoundException('New entity is invalid');
+    if (type === 'people') {
+      const updPersone = new UpdatePeopleDto();
+      updPersone.images = images;
+      await this.peopleService.update(id, updPersone);
+    } else if (type === 'films') {
+      const updFilm = new UpdateFilmDto();
+      updFilm.images = images;
+      await this.filmService.update(id, updFilm);
+    } else if (type === 'planets') {
+      const updPlanet = new UpdatePlanetDto();
+      updPlanet.images = images;
+      await this.planetService.update(id, updPlanet);
+    } else if (type === 'species') {
+      const updSpecie = new UpdateSpecieDto();
+      updSpecie.images = images;
+      await this.specieService.update(id, updSpecie);
+    } else if (type === 'starships') {
+      const updStarship = new UpdateStarshipDto();
+      updStarship.images = images;
+      await this.starshipService.update(id, updStarship);
+    } else if (type === 'vehicles') {
+      const updVehicle = new UpdateVehicleDto();
+      updVehicle.images = images;
+      await this.vehicleService.update(id, updVehicle);
     }
   }
 }

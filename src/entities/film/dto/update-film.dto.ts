@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsArray, IsDate, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class UpdateFilmDto {
   @ApiPropertyOptional({ description: 'Title of the film', maxLength: 24, example: 'The Empire Strikes Back' })
@@ -37,4 +37,8 @@ export class UpdateFilmDto {
   @IsOptional()
   @Type(() => Date)
   release_date: Date;
+
+  @IsOptional()
+  @IsArray()
+  images: string[];
 }

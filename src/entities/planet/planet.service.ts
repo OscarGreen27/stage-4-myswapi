@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Planets } from './planet.entity';
 import { Repository } from 'typeorm';
@@ -113,6 +113,16 @@ export class PlanetService {
     }
     return result.affected > 0;
   }
+
+  async getImages(id: number) {
+    const exist = await this.itExist(id);
+    if (!exist) {
+      throw new NotFoundException(`Starship with id: ${id} is not exist!`);
+    }
+    const planet = await this.planetRepository.findOne({ where: { id }, select: ['images'] });
+    return planet?.images || [];
+  }
+
   async itExist(id: number): Promise<boolean> {
     return await this.planetRepository.exists({ where: { id } });
   }

@@ -57,7 +57,7 @@ export class UpdatePeopleDto {
   @IsNumber()
   homeworld_id: number;
 
-  // @IsOptional()
-  // @IsArray()
-  // images: string[];
+  @IsOptional()
+  @IsArray()
+  images: string[];
 }

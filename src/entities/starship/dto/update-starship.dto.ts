@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsArray, IsOptional, IsString, MaxLength } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -96,4 +96,8 @@ export class UpdateStarshipDto {
   @IsString()
   @MaxLength(50)
   starship_class: string;
+
+  @IsOptional()
+  @IsArray()
+  images: string[];
 }

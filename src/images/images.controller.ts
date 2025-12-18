@@ -12,7 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
 
@@ -35,16 +35,6 @@ export class ImagesController {
     private readonly imagesService: ImagesService,
   ) {}
 
-  /**
-   * function handler for post method to add images.
-   * uses interceptor to get image from request.
-   * received image is stored in memory, then sent to AWS bucket,
-   * link which returns and ves is stored in database
-   * @param id entity id
-   * @param type entity type
-   * @param file file attached to the request
-   * @returns
-   */
   @Post('/upload/:type/:id')
   @UseInterceptors(FileInterceptor('file', { storage: multer.memoryStorage() }))
   @ApiConsumes('multipart/form-data')
@@ -52,10 +42,17 @@ export class ImagesController {
     schema: {
       type: 'object',
       properties: {
-        file: { type: 'string', format: 'binary' },
+        file: { type: 'string', format: 'binary', description: 'Image file to upload' },
       },
+      required: ['file'],
     },
   })
+  @ApiOperation({
+    summary: 'Upload an image',
+    description: 'Uploads an image for a specific entity (film, starship, etc.) and saves the link in DB. Admin only',
+  })
+  @ApiParam({ name: 'type', description: 'Entity type (e.g., "films", "starships")' })
+  @ApiParam({ name: 'id', description: 'Entity ID' })
   @Roles(Role.Admin)
   async uploadImage(@Param('id', ParseIntPipe) id: number, @Param('type') type: string, @UploadedFile() file: Express.Multer.File) {
     if (!file) {
@@ -75,44 +72,35 @@ export class ImagesController {
     return { ok: true, url };
   }
 
-  /**
-   * get request handler function
-   * @param type entity type
-   * @param id entity id
-   * @returns array of images links
-   */
   @Get('/:type/:id')
+  @ApiOperation({ summary: 'Get images', description: 'Returns all image URLs for a specific entity. Admin only' })
+  @ApiParam({ name: 'type', description: 'Entity type (e.g., "films", "starships")' })
+  @ApiParam({ name: 'id', description: 'Entity ID' })
   @Roles(Role.Admin, Role.User)
   async getImages(@Param('type') type: string, @Param('id', ParseIntPipe) id: number) {
-    const result = await this.imagesService.getEntityByType(type, id);
-    if (!result || !result.images) {
-      throw new NotFoundException('Entity is not found or images array is null!');
-    }
-    return result.images;
+    return await this.imagesService.getEntityImagesByType(type, id);
   }
 
-  /**
-   * function handler method delete.
-   * deletes the image from the AWS bucket and removes the link to the image from the bd array
-   * @param type entity type
-   * @param id entyti id
-   * @param url images url
-   * @returns object with status and deleted link
-   */
   @Delete('/:type/:id/:fileUrl')
-  @ApiBody({ type: String })
+  @ApiOperation({ summary: 'Delete an image', description: 'Deletes an image from S3 and removes its link from DB' })
+  @ApiParam({ name: 'type', description: 'Entity type (e.g., "films", "starships")' })
+  @ApiParam({ name: 'id', description: 'Entity ID' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: { url: { type: 'string', description: 'Image URL to delete' } },
+      required: ['url'],
+      example: { url: 'https://s3.bucket/path/image1.jpg' },
+    },
+  })
   @Roles(Role.Admin)
   async deleteImage(@Param('type') type: string, @Param('id', ParseIntPipe) id: number, @Body('url') url: string) {
     if (!url) {
       throw new NotFoundException('Image URL must be provide in body!');
     }
-    const entity = await this.imagesService.getEntityByType(type, id);
-    if (!entity || !entity.images) {
-      throw new NotFoundException('Entity is not found or images array is null!');
-    }
+    const images = await this.imagesService.getEntityImagesByType(type, id);
 
-    const hasImage = entity.images.includes(url);
-    if (!hasImage) {
+    if (!images.includes(url)) {
       throw new NotFoundException('The image link passed does not belong to this entity!');
     }
 
@@ -120,9 +108,11 @@ export class ImagesController {
 
     await this.s3Service.deleteFile(key);
 
-    entity.images = entity.images.filter((img) => img != url);
+    const filtredImages = images.filter((img) => img != url);
 
-    await this.imagesService.updateEntityByType(type, id, entity);
+    console.log(filtredImages);
+
+    await this.imagesService.updateEntityImages(id, type, filtredImages);
 
     return { ok: true, deletedUrl: url };
   }

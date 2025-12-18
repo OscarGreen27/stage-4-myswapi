@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsOptional, IsString, MaxLength, IsNumber } from 'class-validator';
+import { IsOptional, IsString, MaxLength, IsNumber, IsArray } from 'class-validator';
 
 export class UpdateSpecieDto {
   @ApiPropertyOptional({ example: 'Wookiee', description: 'Name of the species' })
@@ -64,4 +64,8 @@ export class UpdateSpecieDto {
   @IsOptional()
   @IsNumber()
   homeworld_id: number;
+
+  @IsOptional()
+  @IsArray()
+  images: string[];
 }

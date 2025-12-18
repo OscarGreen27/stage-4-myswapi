@@ -7,11 +7,30 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('API Документація')
-    .setDescription('Опис REST API teamcity test v1.2')
-    .setVersion('1.0')
+    .setTitle('Star Wars API by A. Voitenko')
+    .setDescription(
+      `This API was created while taking the 4th level of the Backend NODE.JS course from SHPP
+      
+      
+      To use some methods entities are used,
+      existing entities:
+      - people
+      - films
+      - planets
+      - species
+      - strships
+      - vehicles
+
+      You must have an administrator account to add, edit, and delete entities.
+      Administrator Credentials:
+        Login: Admin
+        Password: 123456
+
+      !!!New accounts are registered with regular user rights and can only view data.
+      `,
+    )
+    .setVersion('1.3')
     .addBearerAuth()
-    .addTag('Api')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
