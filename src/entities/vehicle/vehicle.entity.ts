@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Films } from '../film/film.entity';
+import { Films } from '../../film/film.entity';
 import { People } from '../people/people.entity';
 
 @Entity({ name: 'vehicles', schema: 'vehicles' })

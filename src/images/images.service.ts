@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateFilmDto } from 'src/entities/film/dto/update-film.dto';
-import { FilmService } from 'src/entities/film/film.service';
+import { UpdateFilmDto } from 'src/film/dto/update-film.dto';
+import { FilmService } from 'src/film/film.service';
 import { UpdatePeopleDto } from 'src/entities/people/dto/update-people.dto';
 import { PeopleService } from 'src/entities/people/people.service';
 import { UpdatePlanetDto } from 'src/entities/planet/dto/update-planet.dto';

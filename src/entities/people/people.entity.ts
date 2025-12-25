@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Planets } from '../planet/planet.entity';
-import { Films } from '../film/film.entity';
+import { Films } from '../../film/film.entity';
 import { Species } from '../specie/specie.entity';
 import { Vehicles } from '../vehicle/vehicle.entity';
 import { Starships } from '../starship/starship.entity';

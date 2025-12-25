@@ -8,6 +8,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guards';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
 import { RoleGuard } from 'src/auth/guards/role.guards';
+import { FilmMapper } from './mapper/fillm.mapper';
 
 @ApiBearerAuth()
 @ApiTags('Films')
@@ -51,7 +52,8 @@ export class FilmController {
     description: 'Adds a new film to the database. Only accessible by Admin users',
   })
   async create(@Body() film: CreateFilmDto) {
-    return await this.filmServise.create(film);
+    const payload = FilmMapper.createPeylod(film);
+    return await this.filmServise.create(payload, film.relations);
   }
 
   @Put(':id')

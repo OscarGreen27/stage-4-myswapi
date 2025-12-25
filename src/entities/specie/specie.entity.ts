@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinColumn, OneToOne } from 'typeorm';
-import { Films } from '../film/film.entity';
+import { Films } from '../../film/film.entity';
 import { People } from '../people/people.entity';
 import { Planets } from '../planet/planet.entity';
 

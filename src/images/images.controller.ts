@@ -23,9 +23,6 @@ import { Role } from 'src/enum/role.enum';
 import { AuthGuard } from 'src/auth/guards/auth.guards';
 import { RoleGuard } from 'src/auth/guards/role.guards';
 
-/**
- *images endpoint request handler class
- */
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('images')

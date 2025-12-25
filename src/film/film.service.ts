@@ -2,8 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Films } from './film.entity';
 import { Repository } from 'typeorm';
-import { CreateFilmDto } from './dto/create-film.dto';
 import { UpdateFilmDto } from './dto/update-film.dto';
+import { CreateFilmPeyload } from './peyload/crete-film.peyload';
+import { EntityRelations } from '../entities/entity-relation.dto';
 
 /**
  *class for working with films entity
@@ -56,13 +57,16 @@ export class FilmService {
    * Then the instance is written to the database.
    * @param film object with new film data
    */
-  async create(film: CreateFilmDto) {
-    const newFilmEntity = this.filmRepository.create({
-      ...film,
-      images: [],
-    });
-    const newFilm = this.filmRepository.create(newFilmEntity);
-    await this.filmRepository.save(newFilm);
+  async create(payload: CreateFilmPeyload, relations?: EntityRelations) {
+    console.log(payload);
+    const newFilm = this.filmRepository.create(payload);
+    console.log(newFilm);
+
+    if (relations) {
+      //...todo
+      console.log(relations);
+    }
+    return await this.filmRepository.save(newFilm);
   }
 
   /**

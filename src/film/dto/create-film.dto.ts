@@ -1,6 +1,7 @@
-import { IsDate, IsNumber, IsString, MaxLength } from 'class-validator';
+import { IsDate, IsNumber, IsOptional, IsString, MaxLength, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { EntityRelations } from 'src/entities/entity-relation.dto';
 
 export class CreateFilmDto {
   @ApiProperty({ description: 'Title of the film', maxLength: 24, example: 'A New Hope' })
@@ -31,4 +32,10 @@ export class CreateFilmDto {
   @IsDate()
   @Type(() => Date)
   release_date: Date;
+
+  @ApiProperty({ type: EntityRelations })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => EntityRelations)
+  relations: EntityRelations;
 }
