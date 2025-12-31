@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Films } from './film.entity';
 import { Repository } from 'typeorm';
 import { UpdateFilmDto } from './dto/update-film.dto';
-import { CreateFilmPeyload } from './peyload/crete-film.peyload';
+import { FilmPeyload } from './peyload/crete-film.peyload';
 import { EntityRelations } from '../entities/entity-relation.dto';
 
 /**
@@ -57,7 +57,7 @@ export class FilmService {
    * Then the instance is written to the database.
    * @param film object with new film data
    */
-  async create(payload: CreateFilmPeyload, relations?: EntityRelations) {
+  async create(payload: FilmPeyload, relations?: EntityRelations) {
     console.log(payload);
     const newFilm = this.filmRepository.create(payload);
     console.log(newFilm);

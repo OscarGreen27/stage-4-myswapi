@@ -1,8 +1,8 @@
 import { CreateFilmDto } from '../dto/create-film.dto';
-import { CreateFilmPeyload } from '../peyload/crete-film.peyload';
+import { FilmPeyload as FilmPayload } from '../peyload/crete-film.peyload';
 
 export class FilmMapper {
-  static createPeylod(dto: CreateFilmDto): CreateFilmPeyload {
+  static createFilmPeylod(dto: CreateFilmDto): FilmPayload {
     return {
       title: dto.title,
       episode_id: dto.episode_id,

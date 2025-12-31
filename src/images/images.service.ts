@@ -1,16 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateFilmDto } from 'src/film/dto/update-film.dto';
 import { FilmService } from 'src/film/film.service';
-import { UpdatePeopleDto } from 'src/entities/people/dto/update-people.dto';
-import { PeopleService } from 'src/entities/people/people.service';
-import { UpdatePlanetDto } from 'src/entities/planet/dto/update-planet.dto';
-import { PlanetService } from 'src/entities/planet/planet.service';
-import { UpdateSpecieDto } from 'src/entities/specie/dto/update-specie.dto';
-import { SpecieService } from 'src/entities/specie/specie.service';
-import { UpdateStarshipDto } from 'src/entities/starship/dto/update-starship.dto';
-import { StarshipService } from 'src/entities/starship/starship.service';
-import { UpdateVehicleDto } from 'src/entities/vehicle/dto/update-vehicle.dto';
-import { VehicleService } from 'src/entities/vehicle/vehicle.service';
+import { UpdatePeopleDto } from 'src/people/dto/update-people.dto';
+import { PeopleService } from 'src/people/people.service';
+import { UpdatePlanetDto } from 'src/planet/dto/update-planet.dto';
+import { PlanetService } from 'src/planet/planet.service';
+import { UpdateSpecieDto } from 'src/specie/dto/update-specie.dto';
+import { SpecieService } from 'src/specie/specie.service';
+import { UpdateStarshipDto } from 'src/starship/dto/update-starship.dto';
+import { StarshipService } from 'src/starship/starship.service';
+import { UpdateVehicleDto } from 'src/vehicle/dto/update-vehicle.dto';
+import { VehicleService } from 'src/vehicle/vehicle.service';
 
 /**
  *class for working with user entities

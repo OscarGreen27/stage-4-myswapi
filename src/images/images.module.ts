@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { ImagesController } from './images.controller';
 
 import { FilmModule } from 'src/film/film.module';
-import { PeopleModule } from 'src/entities/people/people.module';
-import { PlanetModule } from 'src/entities/planet/planet.module';
-import { SpecieModule } from 'src/entities/specie/specie.module';
-import { StarshipModule } from 'src/entities/starship/starship.module';
-import { VehicleModule } from 'src/entities/vehicle/vehicle.module';
+import { PeopleModule } from 'src/people/people.module';
+import { PlanetModule } from 'src/planet/planet.module';
+import { SpecieModule } from 'src/specie/specie.module';
+import { StarshipModule } from 'src/starship/starship.module';
+import { VehicleModule } from 'src/vehicle/vehicle.module';
 import { S3Service } from './s3.service';
 import { ImagesService } from './images.service';
 

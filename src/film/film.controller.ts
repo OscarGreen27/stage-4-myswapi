@@ -52,7 +52,7 @@ export class FilmController {
     description: 'Adds a new film to the database. Only accessible by Admin users',
   })
   async create(@Body() film: CreateFilmDto) {
-    const payload = FilmMapper.createPeylod(film);
+    const payload = FilmMapper.createFilmPeylod(film);
     return await this.filmServise.create(payload, film.relations);
   }
 

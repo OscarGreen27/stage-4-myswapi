@@ -1,4 +1,4 @@
-export interface CreateFilmPeyload {
+export interface FilmPeyload {
   title: string;
   episode_id: number;
   opening_crawl: string;
