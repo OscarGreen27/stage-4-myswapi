@@ -18,7 +18,7 @@ async function bootstrap() {
       - films
       - planets
       - species
-      - strships
+      - starship
       - vehicles
 
       You must have an administrator account to add, edit, and delete entities.
@@ -29,7 +29,7 @@ async function bootstrap() {
       !!!New accounts are registered with regular user rights and can only view data.
       `,
     )
-    .setVersion('1.3')
+    .setVersion('1.4')
     .addBearerAuth()
     .build();
 

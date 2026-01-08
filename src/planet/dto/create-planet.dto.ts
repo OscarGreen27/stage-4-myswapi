@@ -2,12 +2,13 @@ import { IsNumberString, IsOptional, IsString, MaxLength, ValidateNested } from 
 import { Transform, TransformFnParams, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { EntityRelations } from 'src/entities/entity-relation.dto';
+import { NameCreateDto } from 'src/dto/create-dto/create-name.dto';
 
-export class CreatePlanetDto {
-  @ApiProperty({ description: 'Name of the planet', example: 'Tatooine' })
-  @IsString()
-  @MaxLength(24)
-  name: string;
+export class CreatePlanetDto extends NameCreateDto {
+  // @ApiProperty({ description: 'Name of the planet', example: 'Tatooine' })
+  // @IsString()
+  // @MaxLength(24)
+  // name: string;
 
   @ApiProperty({ description: 'Rotation period in hours', example: '23' })
   @Transform(({ value }: TransformFnParams): string => (/^[0-9]+$/.test(String(value)) ? value : 'unknown'))
