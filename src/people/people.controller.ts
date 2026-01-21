@@ -64,7 +64,7 @@ export class PeopleController {
   })
   async create(@Body() persone: CreatePeopleDto) {
     const payload = PeopleMapper.createPeyload(persone);
-    return await this.peopleService.create(payload, persone.relations);
+    return await this.peopleService.create(payload);
   }
 
   @Put(':id')

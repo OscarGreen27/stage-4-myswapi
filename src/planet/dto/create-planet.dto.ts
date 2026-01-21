@@ -1,7 +1,6 @@
-import { IsNumberString, IsOptional, IsString, MaxLength, ValidateNested } from 'class-validator';
-import { Transform, TransformFnParams, Type } from 'class-transformer';
+import { IsNumberString, IsString, MaxLength } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { EntityRelations } from 'src/entities/entity-relation.dto';
 import { NameCreateDto } from 'src/dto/create-dto/create-name.dto';
 
 export class CreatePlanetDto extends NameCreateDto {
@@ -53,10 +52,4 @@ export class CreatePlanetDto extends NameCreateDto {
   @IsString()
   @MaxLength(10)
   population: string;
-
-  @ApiProperty({ type: EntityRelations })
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => EntityRelations)
-  relations: EntityRelations;
 }

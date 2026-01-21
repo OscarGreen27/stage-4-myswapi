@@ -3,7 +3,6 @@ import { People } from 'src/people/people.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdatePeopleDto } from './dto/update-people.dto';
-import { EntityRelations } from 'src/entities/entity-relation.dto';
 import { PeoplePayload } from './payload/create-people.peyload';
 
 /**
@@ -56,11 +55,9 @@ export class PeopleService {
    * Then the instance is written to the database.
    * @param film object with new people data
    */
-  async create(payload: PeoplePayload, relation?: EntityRelations): Promise<People> {
+  async create(payload: PeoplePayload): Promise<People> {
     const newPersone = this.peopleRepository.create(payload);
-    if (relation) {
-      //todo
-    }
+
     return await this.peopleRepository.save(newPersone);
   }
 

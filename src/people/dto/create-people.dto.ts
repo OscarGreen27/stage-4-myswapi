@@ -1,15 +1,9 @@
-import { IsOptional, IsString, MaxLength, ValidateNested } from 'class-validator';
-import { Transform, TransformFnParams, Type } from 'class-transformer';
+import { IsString, MaxLength } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { EntityRelations } from 'src/entities/entity-relation.dto';
 import { AppearanceCreateDto } from 'src/dto/create-dto/appearance-create.dto';
 
 export class CreatePeopleDto extends AppearanceCreateDto {
-  // @ApiProperty({ description: 'Name of the character', example: 'Luke Skywalker' })
-  // @IsString()
-  // @MaxLength(24)
-  // name: string;
-
   @ApiProperty({ description: 'Height in cm', example: '172' })
   @Transform(({ value }: TransformFnParams): string => (/^[0-9]+$/.test(String(value)) ? value : 'unknown'))
   @IsString()
@@ -19,21 +13,6 @@ export class CreatePeopleDto extends AppearanceCreateDto {
   @Transform(({ value }: TransformFnParams): string => (/^[0-9]+$/.test(String(value)) ? value : 'unknown'))
   @IsString()
   mass: string;
-
-  // @ApiProperty({ description: 'Hair color', example: 'Blond' })
-  // @IsString()
-  // @MaxLength(24)
-  // hair_color: string;
-
-  // @ApiProperty({ description: 'Skin color', example: 'Fair' })
-  // @IsString()
-  // @MaxLength(24)
-  // skin_color: string;
-
-  // @ApiProperty({ description: 'Eye color', example: 'Blue' })
-  // @IsString()
-  // @MaxLength(24)
-  // eye_color: string;
 
   @ApiProperty({ description: 'Birth year', example: '19BBY' })
   @IsString()
@@ -49,10 +28,4 @@ export class CreatePeopleDto extends AppearanceCreateDto {
   @IsString()
   @MaxLength(100)
   homeworld_id: number;
-
-  @ApiProperty({ type: EntityRelations })
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => EntityRelations)
-  relations: EntityRelations;
 }

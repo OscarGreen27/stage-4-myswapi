@@ -46,7 +46,7 @@ export class VehicleController {
   @ApiOperation({ summary: 'Create vehicle', description: 'Adds a new vehicle to the database' })
   async create(@Body() vehicle: CreateVehicleDto) {
     const peyload = VehicleMapper.createVehiclePeyload(vehicle);
-    return await this.VehicleServise.create(peyload, vehicle.relations);
+    return await this.VehicleServise.create(peyload);
   }
 
   @Put(':id')

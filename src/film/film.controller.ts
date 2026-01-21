@@ -53,7 +53,7 @@ export class FilmController {
   })
   async create(@Body() film: CreateFilmDto) {
     const payload = FilmMapper.createFilmPeylod(film);
-    return await this.filmServise.create(payload, film.relations);
+    return await this.filmServise.create(payload);
   }
 
   @Put(':id')

@@ -4,7 +4,6 @@ import { Planets } from './planet.entity';
 import { Repository } from 'typeorm';
 import { UpdatePlanetDto } from './dto/update-planet.dto';
 import { PlanetPayload } from './payload/create-planer.payload';
-import { EntityRelations } from 'src/entities/entity-relation.dto';
 
 /**
  *class for working with planet entity
@@ -54,11 +53,8 @@ export class PlanetService {
    * Then the instance is written to the database.
    * @param planet object with new planet data
    */
-  async create(peyload: PlanetPayload, relation?: EntityRelations): Promise<Planets> {
+  async create(peyload: PlanetPayload): Promise<Planets> {
     const newPlanet = this.planetRepository.create(peyload);
-    if (relation) {
-      //todo
-    }
 
     return await this.planetRepository.save(newPlanet);
   }

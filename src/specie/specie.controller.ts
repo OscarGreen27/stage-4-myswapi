@@ -56,7 +56,7 @@ export class SpecieController {
   })
   async create(@Body() specie: CreateSpecieDto) {
     const peyload = SpecieMapper.createSpecieMapper(specie);
-    return await this.specieServise.create(peyload, specie.relations);
+    return await this.specieServise.create(peyload);
   }
 
   @Put(':id')

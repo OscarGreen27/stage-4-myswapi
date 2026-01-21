@@ -20,7 +20,7 @@ import { FilmCharacterModule } from './film_character/film_character.module';
 import { FilmPlanetModule } from './film_planet/film_planet.module';
 import { FilmSpecieModule } from './film_specie/film_specie.module';
 import { FilmStarshipModule } from './film_starship/film_starship.module';
-import { FilmVehicleEntity } from './auth/film_vehicle/film_vehicle.entity';
+import { FilmVehicleEntity } from './film_vehicle/film_vehicle.entity';
 import { FilmStarshipEntity } from './film_starship/film_starship.entity';
 import { PeopleSpecieEntity } from './people_specie/people_specie.entity';
 import { PeopleStarshipEntity } from './people_starship/people_starship.entity';
@@ -35,7 +35,7 @@ import { AllExceptionFilter } from './exception_filter/all-exception.filter';
 import { UserEntity } from './entities/user/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { FilmVehicleModule } from './auth/film_vehicle/film_vehicle.module';
+import { FilmVehicleModule } from './film_vehicle/film_vehicle.module';
 
 @Module({
   imports: [

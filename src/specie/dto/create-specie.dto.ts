@@ -1,15 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, TransformFnParams, Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsString, MaxLength, ValidateNested } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
+import { IsNumber, IsString, MaxLength } from 'class-validator';
 import { AppearanceCreateDto } from 'src/dto/create-dto/appearance-create.dto';
-import { EntityRelations } from 'src/entities/entity-relation.dto';
 
 export class CreateSpecieDto extends AppearanceCreateDto {
-  // @ApiProperty({ example: 'Wookiee', description: 'Name of the species' })
-  // @IsString()
-  // @MaxLength(24)
-  // name: string;
-
   @ApiProperty({ example: 'mammal', description: 'Classification of the species' })
   @IsString()
   @MaxLength(24)
@@ -28,21 +22,6 @@ export class CreateSpecieDto extends AppearanceCreateDto {
   @MaxLength(24)
   average_height: string;
 
-  // @ApiProperty({ example: 'gray', description: 'Skin colors' })
-  // @IsString()
-  // @MaxLength(50)
-  // skin_colors: string;
-
-  // @ApiProperty({ example: 'black, brown', description: 'Hair colors' })
-  // @IsString()
-  // @MaxLength(24)
-  // hair_colors: string;
-
-  // @ApiProperty({ example: 'blue, green, brown', description: 'Eye colors' })
-  // @IsString()
-  // @MaxLength(24)
-  // eye_colors: string;
-
   @ApiProperty({ example: '400', description: 'Average lifespan in years or "unknown"' })
   @Transform(({ value }: TransformFnParams): string => {
     return /^[0-9]+$/.test(String(value)) ? value : 'unknown';
@@ -58,10 +37,4 @@ export class CreateSpecieDto extends AppearanceCreateDto {
   @ApiProperty({ example: 14, description: 'Homeworld ID' })
   @IsNumber()
   homeworld_id: number;
-
-  @ApiProperty({ type: EntityRelations })
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => EntityRelations)
-  relations: EntityRelations;
 }

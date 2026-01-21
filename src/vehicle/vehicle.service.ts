@@ -4,7 +4,6 @@ import { Vehicles } from './vehicle.entity';
 import { Repository } from 'typeorm';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { VehiclePeyload } from './peyload/create-vehicle.peyload';
-import { EntityRelations } from 'src/entities/entity-relation.dto';
 
 /**
  *class for working with vehicle entity
@@ -54,12 +53,8 @@ export class VehicleService {
    * Then the instance is written to the database.
    * @param vehicle object with new film data
    */
-  async create(peyload: VehiclePeyload, relation?: EntityRelations): Promise<Vehicles> {
+  async create(peyload: VehiclePeyload): Promise<Vehicles> {
     const newVehicle = this.vehicleRepository.create(peyload);
-
-    if (relation) {
-      //todo
-    }
 
     return this.vehicleRepository.save(newVehicle);
   }

@@ -54,7 +54,7 @@ export class StarshipController {
   })
   async create(@Body() starship: CreateStarshipDto) {
     const peyload = StarshipMapper.createStarshipPeyload(starship);
-    return await this.starshipServise.create(peyload, starship.relations);
+    return await this.starshipServise.create(peyload);
   }
 
   @Put(':id')

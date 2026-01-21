@@ -52,21 +52,5 @@ export class Planets {
   residents: People[];
 
   @ManyToMany(() => Films, (films) => films.planets)
-  // @JoinTable({
-  //   schema: 'films',
-  //   name: 'films_planets',
-  //   joinColumn: {
-  //     name: 'planet_id',
-  //     referencedColumnName: 'id',
-  //   },
-  //   inverseJoinColumn: {
-  //     name: 'film_id',
-  //     referencedColumnName: 'id',
-  //   },
-  // })
   films: Films[];
-
-  //зворотні зв'язки
-  // @ManyToMany(() => Films, (films) => films.planets)
-  // f: Films[];
 }

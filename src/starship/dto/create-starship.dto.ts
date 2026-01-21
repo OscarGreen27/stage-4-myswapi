@@ -1,7 +1,6 @@
-import { IsOptional, IsString, MaxLength, ValidateNested } from 'class-validator';
-import { Transform, TransformFnParams, Type } from 'class-transformer';
+import { IsString, MaxLength } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { EntityRelations } from 'src/entities/entity-relation.dto';
 import { TransportCreateDto } from 'src/dto/create-dto/transport-create.dto';
 
 export class CreateStarshipDto extends TransportCreateDto {
@@ -86,10 +85,4 @@ export class CreateStarshipDto extends TransportCreateDto {
   @IsString()
   @MaxLength(50)
   starship_class: string;
-
-  @ApiProperty({ type: EntityRelations })
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => EntityRelations)
-  relations: EntityRelations;
 }

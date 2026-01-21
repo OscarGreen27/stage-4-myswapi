@@ -4,7 +4,6 @@ import { Species } from './specie.entity';
 import { Repository } from 'typeorm';
 import { UpdateSpecieDto } from './dto/update-specie.dto';
 import { SpeciePeyload } from './payload/create-specie.peyload';
-import { EntityRelations } from 'src/entities/entity-relation.dto';
 
 /**
  *class for working with specie entity
@@ -54,12 +53,9 @@ export class SpecieService {
    * Then the instance is written to the database.
    * @param specie  object with new specie data
    */
-  async create(peyload: SpeciePeyload, relation?: EntityRelations): Promise<Species> {
+  async create(peyload: SpeciePeyload): Promise<Species> {
     const newSpecie = this.specieRepository.create(peyload);
 
-    if (relation) {
-      //todo
-    }
     return await this.specieRepository.save(newSpecie);
   }
 

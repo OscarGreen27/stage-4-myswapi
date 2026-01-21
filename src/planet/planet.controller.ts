@@ -51,7 +51,7 @@ export class PlanetController {
   })
   async create(@Body() planet: CreatePlanetDto) {
     const payload = PlanetMapper.createPlanerPayload(planet);
-    return await this.planetServise.create(payload, planet.relations);
+    return await this.planetServise.create(payload);
   }
 
   @Put(':id')

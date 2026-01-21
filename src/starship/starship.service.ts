@@ -4,7 +4,6 @@ import { Starships } from './starship.entity';
 import { Repository } from 'typeorm';
 import { UpdateStarshipDto } from './dto/update-starship.dto';
 import { StarshipPeyload } from './peyload/create-starship.peyload';
-import { EntityRelations } from 'src/entities/entity-relation.dto';
 
 /**
  *class for working with starship entity
@@ -57,11 +56,8 @@ export class StarshipService {
    * Then the instance is written to the database.
    * @param starship object with new film data
    */
-  async create(peyload: StarshipPeyload, relations?: EntityRelations): Promise<Starships> {
-    const newStarship = this.starshipRepository.create();
-    if (relations) {
-      //todo
-    }
+  async create(peyload: StarshipPeyload): Promise<Starships> {
+    const newStarship = this.starshipRepository.create(peyload);
 
     return await this.starshipRepository.save(newStarship);
   }
