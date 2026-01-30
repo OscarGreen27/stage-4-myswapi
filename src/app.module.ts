@@ -36,6 +36,7 @@ import { UserEntity } from './entities/user/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FilmVehicleModule } from './film_vehicle/film_vehicle.module';
+import { Image } from './images/image.entity';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { FilmVehicleModule } from './film_vehicle/film_vehicle.module';
     PeopleStarshipModule,
     PeopleVehicleModule,
     PlanetResidentModule,
+    ImagesModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -85,6 +87,7 @@ import { FilmVehicleModule } from './film_vehicle/film_vehicle.module';
           PeopleVehicleEntity,
           PlanetResidentEntity,
           UserEntity,
+          Image,
         ],
         synchronize: false,
       }),
