@@ -1,22 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Planets } from './planet.entity';
+import { Planet } from './planet.entity';
 import { Repository } from 'typeorm';
-import { UpdatePlanetDto } from './dto/update-planet.dto';
-import { PlanetPayload } from './payload/create-planer.payload';
+import { UpdatePlanetDto } from './dto/planet-update.dto';
+import { PlanetPayload } from './payload/planer-create.payload';
 
 /**
  *class for working with planet entity
  */
 @Injectable()
 export class PlanetService {
-  constructor(@InjectRepository(Planets) private planetRepository: Repository<Planets>) {}
+  constructor(@InjectRepository(Planet) private planetRepository: Repository<Planet>) {}
 
   /**
    * the function gets all records in database from planets table
    * @returns array of entities planets sorted by id growing
    */
-  async getAll(): Promise<Planets[]> {
+  async getAll(): Promise<Planet[]> {
     return await this.planetRepository.find({ order: { id: 'ASC' }, relations: ['residents', 'films'] });
   }
 
@@ -25,7 +25,7 @@ export class PlanetService {
    * @param id planet id
    * @returns planet entity if id exist in database, null if no id-match
    */
-  async getOne(id: number): Promise<Planets | null> {
+  async getOne(id: number): Promise<Planet | null> {
     return await this.planetRepository.findOne({ where: { id }, relations: ['residents', 'films'] });
   }
 
@@ -36,7 +36,7 @@ export class PlanetService {
    * @param limit number of objects on page
    * @returns array of films entity
    */
-  async getSeveral(page: number, limit: number): Promise<Planets[]> {
+  async getSeveral(page: number, limit: number): Promise<Planet[]> {
     const skip = (page - 1) * limit;
     return await this.planetRepository.find({
       skip: skip,
@@ -53,7 +53,7 @@ export class PlanetService {
    * Then the instance is written to the database.
    * @param planet object with new planet data
    */
-  async create(peyload: PlanetPayload): Promise<Planets> {
+  async create(peyload: PlanetPayload): Promise<Planet> {
     const newPlanet = this.planetRepository.create(peyload);
 
     return await this.planetRepository.save(newPlanet);
@@ -66,7 +66,7 @@ export class PlanetService {
    * @param updateDto object with fields to be replaced
    * @returns object with replaced fields, null if no record with the matching id was found
    */
-  async update(id: number, updateDto: UpdatePlanetDto): Promise<Planets | null> {
+  async update(id: number, updateDto: UpdatePlanetDto): Promise<Planet | null> {
     const existing = await this.planetRepository.findOneBy({ id });
     if (!existing) return null;
 

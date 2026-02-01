@@ -1,10 +1,10 @@
 import { Body, Controller, Post, Get, Put, Delete, ParseIntPipe, Param, ValidationPipe, Query, UseGuards } from '@nestjs/common';
 import { PlanetService } from './planet.service';
-import { UpdatePlanetDto } from './dto/update-planet.dto';
-import { CreatePlanetDto } from './dto/create-planet.dto';
+import { UpdatePlanetDto } from './dto/planet-update.dto';
+import { CreatePlanetDto } from './dto/planet-create.dto';
 
 import { ApiTags, ApiQuery, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { Planets } from './planet.entity';
+import { Planet } from './planet.entity';
 import { AuthGuard } from 'src/auth/guards/auth.guards';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
@@ -26,7 +26,7 @@ export class PlanetController {
   async get(
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
-  ): Promise<Planets[]> {
+  ): Promise<Planet[]> {
     if (!page && !limit) {
       return this.planetServise.getAll();
     }

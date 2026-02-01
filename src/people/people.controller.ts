@@ -1,8 +1,8 @@
 import { Body, Controller, Post, Get, ParseIntPipe, Param, Put, Delete, NotFoundException, Query, UseGuards } from '@nestjs/common';
 import { PeopleService } from './people.service';
 import { People } from './people.entity';
-import { CreatePeopleDto } from './dto/create-people.dto';
-import { UpdatePeopleDto } from './dto/update-people.dto';
+import { CreatePeopleDto } from './dto/people-create.dto';
+import { UpdatePeopleDto } from './dto/people-update.dto';
 
 import { ApiTags, ApiQuery, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import * as path from 'path';

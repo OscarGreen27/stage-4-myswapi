@@ -1,5 +1,5 @@
-import { CreatePlanetDto } from '../dto/create-planet.dto';
-import { PlanetPayload } from '../payload/create-planer.payload';
+import { CreatePlanetDto } from '../dto/planet-create.dto';
+import { PlanetPayload } from '../payload/planer-create.payload';
 
 export class PlanetMapper {
   static createPlanerPayload(dto: CreatePlanetDto): PlanetPayload {

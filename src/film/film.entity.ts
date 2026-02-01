@@ -1,12 +1,12 @@
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Planets } from '../planet/planet.entity';
-import { Species } from '../specie/specie.entity';
-import { Starships } from '../starship/starship.entity';
-import { Vehicles } from '../vehicle/vehicle.entity';
+import { Planet } from '../planet/planet.entity';
+import { Specie } from '../specie/specie.entity';
+import { Starship } from '../starship/starship.entity';
+import { Vehicle } from '../vehicle/vehicle.entity';
 import { People } from '../people/people.entity';
 
-@Entity({ name: 'films', schema: 'films' })
-export class Films {
+@Entity({ name: 'film', schema: 'film' })
+export class Film {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -45,7 +45,7 @@ export class Films {
   })
   characters: People[];
 
-  @ManyToMany(() => Planets, (planets) => planets.films)
+  @ManyToMany(() => Planet, (planet) => planet.films)
   @JoinTable({
     name: 'films_planets',
     joinColumn: {
@@ -57,9 +57,9 @@ export class Films {
       referencedColumnName: 'id',
     },
   })
-  planets: Planets[];
+  planets: Planet[];
 
-  @ManyToMany(() => Species, (species) => species.films)
+  @ManyToMany(() => Specie, (specie) => specie.films)
   @JoinTable({
     name: 'films_species',
     joinColumn: {
@@ -71,9 +71,9 @@ export class Films {
       referencedColumnName: 'id',
     },
   })
-  species: Species[];
+  species: Specie[];
 
-  @ManyToMany(() => Starships, (starships) => starships.films)
+  @ManyToMany(() => Starship, (starship) => starship.films)
   @JoinTable({
     name: 'films_starships',
     joinColumn: {
@@ -85,9 +85,9 @@ export class Films {
       referencedColumnName: 'id',
     },
   })
-  starships: Starships[];
+  starships: Starship[];
 
-  @ManyToMany(() => Vehicles, (vehicles) => vehicles.films)
+  @ManyToMany(() => Vehicle, (vehicle) => vehicle.films)
   @JoinTable({
     name: 'films_vehicles',
     joinColumn: {
@@ -99,5 +99,5 @@ export class Films {
       referencedColumnName: 'id',
     },
   })
-  vehicles: Vehicles[];
+  vehicles: Vehicle[];
 }

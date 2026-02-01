@@ -1,5 +1,5 @@
-import { CreatePeopleDto } from '../dto/create-people.dto';
-import { PeoplePayload } from '../payload/create-people.peyload';
+import { CreatePeopleDto } from '../dto/people-create.dto';
+import { PeoplePayload } from '../payload/people-create.peyload';
 
 export class PeopleMapper {
   static createPeyload(dto: CreatePeopleDto): PeoplePayload {

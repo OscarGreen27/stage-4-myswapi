@@ -1,5 +1,5 @@
-import { CreateSpecieDto } from '../dto/create-specie.dto';
-import { SpeciePeyload } from '../payload/create-specie.peyload';
+import { CreateSpecieDto } from '../dto/specie-create.dto';
+import { SpeciePeyload } from '../payload/specie-create.peyload';
 
 export class SpecieMapper {
   static createSpecieMapper(dto: CreateSpecieDto): SpeciePeyload {

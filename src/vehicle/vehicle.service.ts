@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Vehicles } from './vehicle.entity';
+import { Vehicle } from './vehicle.entity';
 import { Repository } from 'typeorm';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { VehiclePeyload } from './peyload/create-vehicle.peyload';
@@ -10,13 +10,13 @@ import { VehiclePeyload } from './peyload/create-vehicle.peyload';
  */
 @Injectable()
 export class VehicleService {
-  constructor(@InjectRepository(Vehicles) private vehicleRepository: Repository<Vehicles>) {}
+  constructor(@InjectRepository(Vehicle) private vehicleRepository: Repository<Vehicle>) {}
 
   /**
    * the function gets all records in database from vehicles table
    * @returns array of entities vehicles sorted by id growing
    */
-  async getAll(): Promise<Vehicles[]> {
+  async getAll(): Promise<Vehicle[]> {
     return await this.vehicleRepository.find({ order: { id: 'ASC' }, relations: ['pilotes', 'films'] });
   }
 
@@ -25,7 +25,7 @@ export class VehicleService {
    * @param id vehicle id
    * @returns vehicle entity if id exist in database, null if no id-match
    */
-  async getOne(id: number): Promise<Vehicles | null> {
+  async getOne(id: number): Promise<Vehicle | null> {
     return await this.vehicleRepository.findOne({ where: { id }, relations: ['pilotes', 'films'] });
   }
 
@@ -36,7 +36,7 @@ export class VehicleService {
    * @param limit number of objects on page
    * @returns array of vehicles entity
    */
-  async getSeveral(page: number, limit: number): Promise<Vehicles[]> {
+  async getSeveral(page: number, limit: number): Promise<Vehicle[]> {
     const skip = (page - 1) * limit;
     return await this.vehicleRepository.find({
       skip: skip,
@@ -53,7 +53,7 @@ export class VehicleService {
    * Then the instance is written to the database.
    * @param vehicle object with new film data
    */
-  async create(peyload: VehiclePeyload): Promise<Vehicles> {
+  async create(peyload: VehiclePeyload): Promise<Vehicle> {
     const newVehicle = this.vehicleRepository.create(peyload);
 
     return this.vehicleRepository.save(newVehicle);
@@ -66,7 +66,7 @@ export class VehicleService {
    * @param updateDto object with fields to be replaced
    * @returns object with replaced fields, null if no record with the matching id was found
    */
-  async update(id: number, updateDto: UpdateVehicleDto): Promise<Vehicles | null> {
+  async update(id: number, updateDto: UpdateVehicleDto): Promise<Vehicle | null> {
     const existing = await this.vehicleRepository.findOneBy({ id });
     if (!existing) return null;
 

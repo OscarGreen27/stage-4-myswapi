@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinColumn, OneToOne } from 'typeorm';
-import { Films } from '../film/film.entity';
+import { Film } from '../film/film.entity';
 import { People } from '../people/people.entity';
-import { Planets } from '../planet/planet.entity';
+import { Planet } from '../planet/planet.entity';
 
-@Entity({ name: 'species', schema: 'species' })
-export class Species {
+@Entity({ name: 'specie', schema: 'specie' })
+export class Specie {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -41,13 +41,13 @@ export class Species {
   @Column('text', { array: true, nullable: true })
   images: string[];
 
-  @OneToOne(() => Planets)
+  @OneToOne(() => Planet)
   @JoinColumn({ name: 'homeworld_id' })
-  homeworld: Planets;
+  homeworld: Planet;
 
   @ManyToMany(() => People, (people) => people.species)
   people: People[];
 
-  @ManyToMany(() => Films, (films) => films.species)
-  films: Films[];
+  @ManyToMany(() => Film, (film) => film.species)
+  films: Film[];
 }

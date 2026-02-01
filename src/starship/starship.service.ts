@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Starships } from './starship.entity';
+import { Starship } from './starship.entity';
 import { Repository } from 'typeorm';
-import { UpdateStarshipDto } from './dto/update-starship.dto';
+import { UpdateStarshipDto } from './dto/starship-update.dto';
 import { StarshipPeyload } from './peyload/create-starship.peyload';
 
 /**
@@ -11,15 +11,15 @@ import { StarshipPeyload } from './peyload/create-starship.peyload';
 @Injectable()
 export class StarshipService {
   constructor(
-    @InjectRepository(Starships)
-    private starshipRepository: Repository<Starships>,
+    @InjectRepository(Starship)
+    private starshipRepository: Repository<Starship>,
   ) {}
 
   /**
    * the function gets all records in database from starship table
    * @returns array of entities films sorted by id growing
    */
-  async getAll(): Promise<Starships[]> {
+  async getAll(): Promise<Starship[]> {
     return await this.starshipRepository.find({ order: { id: 'ASC' }, relations: ['films', 'pilotes'] });
   }
 
@@ -28,7 +28,7 @@ export class StarshipService {
    * @param id starship id
    * @returns starship entity if id exist in database, null if no id-match
    */
-  async getOne(id: number): Promise<Starships | null> {
+  async getOne(id: number): Promise<Starship | null> {
     return await this.starshipRepository.findOne({ where: { id }, relations: ['films', 'pilotes'] });
   }
 
@@ -39,7 +39,7 @@ export class StarshipService {
    * @param limit number of objects on page
    * @returns array of starships entity
    */
-  async getSeveral(page: number, limit: number): Promise<Starships[]> {
+  async getSeveral(page: number, limit: number): Promise<Starship[]> {
     const skip = (page - 1) * limit;
     return await this.starshipRepository.find({
       skip: skip,
@@ -56,7 +56,7 @@ export class StarshipService {
    * Then the instance is written to the database.
    * @param starship object with new film data
    */
-  async create(peyload: StarshipPeyload): Promise<Starships> {
+  async create(peyload: StarshipPeyload): Promise<Starship> {
     const newStarship = this.starshipRepository.create(peyload);
 
     return await this.starshipRepository.save(newStarship);
@@ -69,7 +69,7 @@ export class StarshipService {
    * @param updateDto object with fields to be replaced
    * @returns object with replaced fields, null if no record with the matching id was found
    */
-  async update(id: number, updateDto: UpdateStarshipDto): Promise<Starships | null> {
+  async update(id: number, updateDto: UpdateStarshipDto): Promise<Starship | null> {
     const existing = await this.starshipRepository.findOneBy({ id });
     if (!existing) return null;
 

@@ -1,9 +1,9 @@
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Films } from '../film/film.entity';
+import { Film } from '../film/film.entity';
 import { People } from '../people/people.entity';
 
-@Entity({ name: 'planets', schema: 'planets' })
-export class Planets {
+@Entity({ name: 'planet', schema: 'planet' })
+export class Planet {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -51,6 +51,6 @@ export class Planets {
   })
   residents: People[];
 
-  @ManyToMany(() => Films, (films) => films.planets)
-  films: Films[];
+  @ManyToMany(() => Film, (film) => film.planets)
+  films: Film[];
 }

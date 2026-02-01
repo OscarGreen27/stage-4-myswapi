@@ -4,11 +4,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { NameCreateDto } from 'src/dto/create-dto/create-name.dto';
 
 export class CreatePlanetDto extends NameCreateDto {
-  // @ApiProperty({ description: 'Name of the planet', example: 'Tatooine' })
-  // @IsString()
-  // @MaxLength(24)
-  // name: string;
-
   @ApiProperty({ description: 'Rotation period in hours', example: '23' })
   @Transform(({ value }: TransformFnParams): string => (/^[0-9]+$/.test(String(value)) ? value : 'unknown'))
   @IsString()

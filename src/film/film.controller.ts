@@ -1,9 +1,9 @@
 import { Body, Controller, Post, Get, Put, Delete, ParseIntPipe, Param, Query, UseGuards } from '@nestjs/common';
 import { FilmService } from './film.service';
-import { UpdateFilmDto } from './dto/update-film.dto';
-import { CreateFilmDto } from './dto/create-film.dto';
+import { UpdateFilmDto } from './dto/film-update.dto';
+import { CreateFilmDto } from './dto/film-create.dto';
 import { ApiTags, ApiQuery, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { Films } from './film.entity';
+import { Film } from './film.entity';
 import { AuthGuard } from 'src/auth/guards/auth.guards';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
@@ -28,7 +28,7 @@ export class FilmController {
   async get(
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
-  ): Promise<Films[]> {
+  ): Promise<Film[]> {
     if (!page && !limit) {
       return this.filmServise.getAll();
     }

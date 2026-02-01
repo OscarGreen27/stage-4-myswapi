@@ -4,7 +4,7 @@ import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Vehicles } from './vehicle.entity';
+import { Vehicle } from './vehicle.entity';
 import { AuthGuard } from 'src/auth/guards/auth.guards';
 import { RoleGuard } from 'src/auth/guards/role.guards';
 import { Roles } from 'src/decorators/role.decorator';
@@ -26,7 +26,7 @@ export class VehicleController {
   async get(
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
-  ): Promise<Vehicles[]> {
+  ): Promise<Vehicle[]> {
     if (!page && !limit) {
       return this.VehicleServise.getAll();
     }

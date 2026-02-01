@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { People } from 'src/people/people.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UpdatePeopleDto } from './dto/update-people.dto';
-import { PeoplePayload } from './payload/create-people.peyload';
+import { UpdatePeopleDto } from './dto/people-update.dto';
+import { PeoplePayload } from './payload/people-create.peyload';
 
 /**
  *class for working with people entity

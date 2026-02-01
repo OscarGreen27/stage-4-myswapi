@@ -1,9 +1,9 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Films } from '../film/film.entity';
+import { Film } from '../film/film.entity';
 import { People } from '../people/people.entity';
 
-@Entity({ name: 'vehicles', schema: 'vehicles' })
-export class Vehicles {
+@Entity({ name: 'vehicle', schema: 'vehicle' })
+export class Vehicle {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -46,6 +46,6 @@ export class Vehicles {
   @ManyToMany(() => People, (people) => people.vehicles)
   pilotes: People[];
 
-  @ManyToMany(() => Films, (films) => films.vehicles)
-  films: Films[];
+  @ManyToMany(() => Film, (film) => film.vehicles)
+  films: Film[];
 }

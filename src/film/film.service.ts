@@ -1,22 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Films } from './film.entity';
+import { Film } from './film.entity';
 import { Repository } from 'typeorm';
-import { UpdateFilmDto } from './dto/update-film.dto';
-import { FilmPeyload } from './peyload/crete-film.peyload';
+import { UpdateFilmDto } from './dto/film-update.dto';
+import { FilmPeyload } from './peyload/film-create.peyload';
 
 /**
  *class for working with films entity
  */
 @Injectable()
 export class FilmService {
-  constructor(@InjectRepository(Films) private filmRepository: Repository<Films>) {}
+  constructor(@InjectRepository(Film) private filmRepository: Repository<Film>) {}
 
   /**
    * the function gets all records in database from films table
    * @returns array of entities films sorted by id growing
    */
-  async getAll(): Promise<Films[]> {
+  async getAll(): Promise<Film[]> {
     const result = await this.filmRepository.find({ order: { id: 'ASC' }, relations: ['planets', 'species', 'starships', 'vehicles', 'characters'] });
 
     return result;
@@ -27,7 +27,7 @@ export class FilmService {
    * @param id film id
    * @returns film entity if id exist in database, null if no id-match
    */
-  async getOne(id: number): Promise<Films | null> {
+  async getOne(id: number): Promise<Film | null> {
     const result = await this.filmRepository.findOne({ where: { id }, relations: ['planets', 'species', 'starships', 'vehicles', 'characters'] });
     return result;
   }
@@ -39,7 +39,7 @@ export class FilmService {
    * @param limit number of objects on page
    * @returns array of films entity
    */
-  async getSeveral(page: number, limit: number): Promise<Films[]> {
+  async getSeveral(page: number, limit: number): Promise<Film[]> {
     const skip = (page - 1) * limit;
     return await this.filmRepository.find({
       skip: skip,
@@ -71,7 +71,7 @@ export class FilmService {
    * @param updateDto object with fields to be replaced
    * @returns object with replaced fields, null if no record with the matching id was found
    */
-  async update(id: number, updateDto: UpdateFilmDto): Promise<Films | null> {
+  async update(id: number, updateDto: UpdateFilmDto): Promise<Film | null> {
     const existing = await this.filmRepository.findOneBy({ id });
     if (!existing) return null;
 

@@ -7,8 +7,8 @@ import { FilmCharacterEntity } from './fillm_character.entity';
 export class FilmsCharactersService {
   constructor(@InjectRepository(FilmCharacterEntity) private filmCharacterRepository: Repository<FilmCharacterEntity>) {}
 
-  async create(filmsChrarcter: FilmCharacterEntity) {
-    return await this.filmCharacterRepository.save(filmsChrarcter);
+  async create(filmChrarcter: FilmCharacterEntity) {
+    return await this.filmCharacterRepository.save(filmChrarcter);
   }
 
   async delete(FilmCharacter: FilmCharacterEntity) {

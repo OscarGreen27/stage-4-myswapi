@@ -1,4 +1,4 @@
-import { CreateStarshipDto } from '../dto/create-starship.dto';
+import { CreateStarshipDto } from '../dto/starship-create.dto';
 import { StarshipPeyload } from '../peyload/create-starship.peyload';
 
 export class StarshipMapper {

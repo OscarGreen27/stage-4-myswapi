@@ -1,7 +1,8 @@
-import { IsArray, IsOptional } from 'class-validator';
 import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { CreatePlanetDto } from './create-planet.dto';
-export class UpdatePlanetDto extends PartialType(CreatePlanetDto) {
+import { IsArray, IsOptional } from 'class-validator';
+import { CreateFilmDto } from './film-create.dto';
+
+export class UpdateFilmDto extends PartialType(CreateFilmDto) {
   @ApiPropertyOptional({ description: 'Population count', example: ['image-1-name', 'image-2-name'] })
   @IsOptional()
   @IsArray()

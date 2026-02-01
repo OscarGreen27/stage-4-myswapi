@@ -3,16 +3,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PeopleModule } from 'src/people/people.module';
 import { People } from './people/people.entity';
 import { FilmModule } from './film/film.module';
-import { Films } from './film/film.entity';
+import { Film } from './film/film.entity';
 import { PlanetModule } from './planet/planet.module';
 import { SpecieModule } from './specie/specie.module';
 import { StarshipModule } from './starship/starship.module';
 import { VehicleModule } from './vehicle/vehicle.module';
-import { Species } from './specie/specie.entity';
-import { Starships } from './starship/starship.entity';
-import { Vehicles } from './vehicle/vehicle.entity';
-import { Planets } from './planet/planet.entity';
-import { ImagesModule } from './images/images.module';
+import { Specie } from './specie/specie.entity';
+import { Starship } from './starship/starship.entity';
+import { Vehicle } from './vehicle/vehicle.entity';
+import { Planet } from './planet/planet.entity';
+import { ImagesModule } from './image/images.module';
 import { FilmCharacterEntity } from './film_character/fillm_character.entity';
 import { FilmPlanetEntity } from './film_planet/film_planet.entity';
 import { FilmSpecieEntity } from './film_specie/film_specie.entity';
@@ -32,11 +32,11 @@ import { PlanetResidentEntity } from './planest_resident/planet_resident.entity'
 import { PeopleSpecieModule } from './people_specie/people_specie.module';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionFilter } from './exception_filter/all-exception.filter';
-import { UserEntity } from './entities/user/user.entity';
+import { User } from './entities/user/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FilmVehicleModule } from './film_vehicle/film_vehicle.module';
-import { Image } from './images/image.entity';
+import { Image } from './image/image.entity';
 
 @Module({
   imports: [
@@ -72,11 +72,11 @@ import { Image } from './images/image.entity';
         database: configService.get('DB_NAME', 'starwars'),
         entities: [
           People,
-          Films,
-          Planets,
-          Species,
-          Starships,
-          Vehicles,
+          Film,
+          Planet,
+          Specie,
+          Starship,
+          Vehicle,
           FilmCharacterEntity,
           FilmPlanetEntity,
           FilmSpecieEntity,
@@ -86,7 +86,7 @@ import { Image } from './images/image.entity';
           PeopleStarshipEntity,
           PeopleVehicleEntity,
           PlanetResidentEntity,
-          UserEntity,
+          User,
           Image,
         ],
         synchronize: false,

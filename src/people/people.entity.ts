@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Planets } from '../planet/planet.entity';
-import { Films } from '../film/film.entity';
-import { Species } from '../specie/specie.entity';
-import { Vehicles } from '../vehicle/vehicle.entity';
-import { Starships } from '../starship/starship.entity';
+import { Planet } from '../planet/planet.entity';
+import { Film } from '../film/film.entity';
+import { Specie } from '../specie/specie.entity';
+import { Vehicle } from '../vehicle/vehicle.entity';
+import { Starship } from '../starship/starship.entity';
 
 @Entity({ schema: 'people', name: 'people' })
 export class People {
@@ -40,14 +40,14 @@ export class People {
   @Column('text', { array: true, nullable: true })
   images: string[];
 
-  @OneToOne(() => Planets)
+  @OneToOne(() => Planet)
   @JoinColumn({ name: 'homeworld_id' })
-  homeworld: Planets;
+  homeworld: Planet;
 
-  @ManyToMany(() => Films, (films) => films.characters)
-  films: Films[];
+  @ManyToMany(() => Film, (film) => film.characters)
+  films: Film[];
 
-  @ManyToMany(() => Species, (species) => species.people)
+  @ManyToMany(() => Specie, (specie) => specie.people)
   @JoinTable({
     name: 'people_species',
     joinColumn: {
@@ -59,9 +59,9 @@ export class People {
       referencedColumnName: 'id',
     },
   })
-  species: Species[];
+  species: Specie[];
 
-  @ManyToMany(() => Vehicles, (vehicles) => vehicles.pilotes)
+  @ManyToMany(() => Vehicle, (vehicle) => vehicle.pilotes)
   @JoinTable({
     name: 'people_vehicles',
     joinColumn: {
@@ -73,9 +73,9 @@ export class People {
       referencedColumnName: 'id',
     },
   })
-  vehicles: Vehicles[];
+  vehicles: Vehicle[];
 
-  @ManyToMany(() => Starships, (starships) => starships.pilotes)
+  @ManyToMany(() => Starship, (starship) => starship.pilotes)
   @JoinTable({
     name: 'people_starships',
     joinColumn: {
@@ -87,5 +87,5 @@ export class People {
       referencedColumnName: 'id',
     },
   })
-  starships: Starships[];
+  starships: Starship[];
 }

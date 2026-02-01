@@ -1,22 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Species } from './specie.entity';
+import { Specie } from './specie.entity';
 import { Repository } from 'typeorm';
-import { UpdateSpecieDto } from './dto/update-specie.dto';
-import { SpeciePeyload } from './payload/create-specie.peyload';
+import { UpdateSpecieDto } from './dto/specie-update.dto';
+import { SpeciePeyload } from './payload/specie-create.peyload';
 
 /**
  *class for working with specie entity
  */
 @Injectable()
 export class SpecieService {
-  constructor(@InjectRepository(Species) private specieRepository: Repository<Species>) {}
+  constructor(@InjectRepository(Specie) private specieRepository: Repository<Specie>) {}
 
   /**
    * the function gets all records in database from specie table
    * @returns array of entities specie sorted by id growing
    */
-  async getAll(): Promise<Species[]> {
+  async getAll(): Promise<Specie[]> {
     return await this.specieRepository.find({ order: { id: 'ASC' }, relations: ['homeworld', 'people', 'films'] });
   }
 
@@ -25,7 +25,7 @@ export class SpecieService {
    * @param id specie id
    * @returns speci entity if id exist in database, null if no id-match
    */
-  async getOne(id: number): Promise<Species | null> {
+  async getOne(id: number): Promise<Specie | null> {
     return await this.specieRepository.findOne({ where: { id }, relations: ['homeworld', 'people', 'films'] });
   }
 
@@ -36,7 +36,7 @@ export class SpecieService {
    * @param limit number of objects on page
    * @returns array of specie entity
    */
-  async getSeveral(page: number, limit: number): Promise<Species[]> {
+  async getSeveral(page: number, limit: number): Promise<Specie[]> {
     const skip = (page - 1) * limit;
     return await this.specieRepository.find({
       skip: skip,
@@ -53,7 +53,7 @@ export class SpecieService {
    * Then the instance is written to the database.
    * @param specie  object with new specie data
    */
-  async create(peyload: SpeciePeyload): Promise<Species> {
+  async create(peyload: SpeciePeyload): Promise<Specie> {
     const newSpecie = this.specieRepository.create(peyload);
 
     return await this.specieRepository.save(newSpecie);
@@ -66,7 +66,7 @@ export class SpecieService {
    * @param updateDto object with fields to be replaced
    * @returns object with replaced fields, null if no record with the matching id was found
    */
-  async update(id: number, updateDto: UpdateSpecieDto): Promise<Species | null> {
+  async update(id: number, updateDto: UpdateSpecieDto): Promise<Specie | null> {
     const existing = await this.specieRepository.findOneBy({ id });
     if (!existing) return null;
 

@@ -1,10 +1,10 @@
 import { Body, Controller, Post, Get, Put, Delete, ParseIntPipe, Param, ValidationPipe, Query, UseGuards } from '@nestjs/common';
 import { StarshipService } from './starship.service';
-import { CreateStarshipDto } from './dto/create-starship.dto';
-import { UpdateStarshipDto } from './dto/update-starship.dto';
+import { CreateStarshipDto } from './dto/starship-create.dto';
+import { UpdateStarshipDto } from './dto/starship-update.dto';
 
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Starships } from './starship.entity';
+import { Starship } from './starship.entity';
 import { AuthGuard } from 'src/auth/guards/auth.guards';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
@@ -29,7 +29,7 @@ export class StarshipController {
   async get(
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
-  ): Promise<Starships[]> {
+  ): Promise<Starship[]> {
     if (!page && !limit) {
       return this.starshipServise.getAll();
     }

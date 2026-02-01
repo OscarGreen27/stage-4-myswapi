@@ -23,7 +23,7 @@ export class S3Service {
    * @param id entity ID. Required to create a folder for each unique entity
    * @returns image link
    */
-  async uploadFile(file: Express.Multer.File, folder: string, id: number): Promise<string> {
+  async uploadImage(id: number, folder: string, file: Express.Multer.File) {
     const bucket = this.configService.get<string>('S3_BUCKET_NAME', 'bucket_name');
     const key = `${folder}/${id}/${Date.now()}_${Math.floor(Math.random() * 1e6)}_${file.originalname}`;
 
@@ -33,14 +33,14 @@ export class S3Service {
       Body: file.buffer,
       ContentType: file.mimetype,
     });
+
     try {
       await this.s3.send(command);
     } catch (err) {
       console.error('Error massage:', err);
-      throw new Error('File upload error');
     }
 
-    return `https://${bucket}.s3.${this.configService.get('S3_REGION')}.amazonaws.com/${key}`;
+    return { url: `https://${bucket}.s3.${this.configService.get('S3_REGION')}.amazonaws.com/${key}`, key: key };
   }
 
   /**
@@ -48,11 +48,11 @@ export class S3Service {
    * @param key key by which the image will be found
    * @returns true if the deletion is successful, false if not
    */
-  async deleteFile(key: string) {
-    const bucket = this.configService.get<string>('S3_BUCKET_NAME', 'bucket_name');
+  async deleteImage(key: string) {
+    //const bucket = this.configService.get<string>('S3_BUCKET_NAME', 'bucket_name');
 
     const command = new DeleteObjectCommand({
-      Bucket: bucket,
+      Bucket: this.configService.get<string>('S3_BUCKET_NAME', 'bucket_name'),
       Key: key,
     });
 
@@ -60,7 +60,6 @@ export class S3Service {
       await this.s3.send(command);
     } catch (err) {
       console.error('Error massage:', err);
-      throw new Error('File not delete!');
     }
     return true;
   }

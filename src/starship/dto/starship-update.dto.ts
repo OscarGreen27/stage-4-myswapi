@@ -1,5 +1,5 @@
 import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { CreateStarshipDto } from './create-starship.dto';
+import { CreateStarshipDto } from './starship-create.dto';
 import { IsArray, IsOptional } from 'class-validator';
 
 export class UpdateStarshipDto extends PartialType(CreateStarshipDto) {

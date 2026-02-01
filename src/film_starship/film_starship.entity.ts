@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn } from 'typeorm';
 
-@Entity({ schema: 'films', name: 'films_starships' })
+@Entity({ schema: 'film', name: 'films_starship' })
 export class FilmStarshipEntity {
   @PrimaryColumn()
   film_id: number;

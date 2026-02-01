@@ -1,5 +1,5 @@
-import { CreateFilmDto } from '../dto/create-film.dto';
-import { FilmPeyload as FilmPayload } from '../peyload/crete-film.peyload';
+import { CreateFilmDto } from '../dto/film-create.dto';
+import { FilmPeyload as FilmPayload } from '../peyload/film-create.peyload';
 
 export class FilmMapper {
   static createFilmPeylod(dto: CreateFilmDto): FilmPayload {

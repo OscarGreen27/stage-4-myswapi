@@ -1,10 +1,10 @@
 import { Body, Controller, Post, Get, Put, Delete, ParseIntPipe, Param, ValidationPipe, Query, UseGuards } from '@nestjs/common';
 import { SpecieService } from './specie.service';
-import { CreateSpecieDto } from './dto/create-specie.dto';
-import { UpdateSpecieDto } from './dto/update-specie.dto';
+import { CreateSpecieDto } from './dto/specie-create.dto';
+import { UpdateSpecieDto } from './dto/specie-update.dto';
 
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Species } from './specie.entity';
+import { Specie } from './specie.entity';
 import { AuthGuard } from 'src/auth/guards/auth.guards';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
@@ -29,7 +29,7 @@ export class SpecieController {
   async get(
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
-  ): Promise<Species[]> {
+  ): Promise<Specie[]> {
     if (!page && !limit) {
       return this.specieServise.getAll();
     }
