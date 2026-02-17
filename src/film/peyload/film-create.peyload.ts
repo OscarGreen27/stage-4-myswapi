@@ -5,5 +5,4 @@ export interface FilmPeyload {
   director: string;
   producer: string;
   release_date: Date;
-  images: string[];
 }

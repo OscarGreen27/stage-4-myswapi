@@ -45,7 +45,7 @@ export class ImageService {
     }
   }
 
-  //---------- private hethods ----------
+  //---------- private methods ----------
   private saveToBucket(id: number, type: string, file: Express.Multer.File) {
     return this.s3Servece.uploadImage(id, type, file);
   }

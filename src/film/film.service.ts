@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Film } from './film.entity';
 import { Repository } from 'typeorm';
@@ -17,7 +17,17 @@ export class FilmService {
    * @returns array of entities films sorted by id growing
    */
   async getAll(): Promise<Film[]> {
-    const result = await this.filmRepository.find({ order: { id: 'ASC' }, relations: ['planets', 'species', 'starships', 'vehicles', 'characters'] });
+    const result = await this.filmRepository.find({
+      order: { id: 'ASC' },
+      relations: ['planets', 'species', 'starships', 'vehicles', 'characters'],
+      select: {
+        planets: { id: true, name: true },
+        species: { id: true, name: true },
+        starships: { id: true, name: true },
+        vehicles: { id: true, name: true },
+        characters: { id: true, name: true },
+      },
+    });
 
     return result;
   }
@@ -28,7 +38,17 @@ export class FilmService {
    * @returns film entity if id exist in database, null if no id-match
    */
   async getOne(id: number): Promise<Film | null> {
-    const result = await this.filmRepository.findOne({ where: { id }, relations: ['planets', 'species', 'starships', 'vehicles', 'characters'] });
+    const result = await this.filmRepository.findOne({
+      where: { id },
+      relations: ['planets', 'species', 'starships', 'vehicles', 'characters'],
+      select: {
+        planets: { id: true, name: true },
+        species: { id: true, name: true },
+        starships: { id: true, name: true },
+        vehicles: { id: true, name: true },
+        characters: { id: true, name: true },
+      },
+    });
     return result;
   }
 
@@ -46,6 +66,13 @@ export class FilmService {
       take: limit,
       order: { id: 'ASC' },
       relations: ['planets', 'species', 'starships', 'vehicles', 'characters'],
+      select: {
+        planets: { id: true, name: true },
+        species: { id: true, name: true },
+        starships: { id: true, name: true },
+        vehicles: { id: true, name: true },
+        characters: { id: true, name: true },
+      },
     });
   }
 
@@ -91,42 +118,5 @@ export class FilmService {
   async delete(id: number): Promise<boolean> {
     const result = await this.filmRepository.delete(id);
     return result.affected !== 0;
-  }
-
-  /**
-   * function adds image references to the films images array
-   * @param id film id
-   * @param url link to the picture
-   * @returns true if the link is added to the array, false if not
-   */
-  async saveImage(id: number, url: string) {
-    const film = await this.filmRepository.findOneBy({ id });
-    if (!film) {
-      throw new Error(`Film with id ${id} does not exist!`);
-    }
-
-    if (!film.images) {
-      film.images = [];
-    }
-    film.images.push(url);
-
-    const result = await this.filmRepository.update(id, film);
-    if (!result.affected) {
-      throw new Error('Failed to add image link to database!');
-    }
-    return result.affected > 0;
-  }
-
-  async getImages(id: number) {
-    const exist = await this.itExist(id);
-    if (!exist) {
-      throw new NotFoundException(`Starship with id: ${id} is not exist!`);
-    }
-    const film = await this.filmRepository.findOne({ where: { id }, select: ['images'] });
-    return film?.images || [];
-  }
-
-  async itExist(id: number): Promise<boolean> {
-    return await this.filmRepository.exists({ where: { id } });
   }
 }

@@ -37,9 +37,6 @@ export class People {
   @Column({ nullable: true })
   homeworld_id: number;
 
-  @Column('text', { array: true, nullable: true })
-  images: string[];
-
   @OneToOne(() => Planet)
   @JoinColumn({ name: 'homeworld_id' })
   homeworld: Planet;
@@ -47,15 +44,15 @@ export class People {
   @ManyToMany(() => Film, (film) => film.characters)
   films: Film[];
 
-  @ManyToMany(() => Specie, (specie) => specie.people)
+  @ManyToMany(() => Specie, (specie) => specie.people) //
   @JoinTable({
     name: 'people_species',
     joinColumn: {
-      name: 'specie_id',
+      name: 'person_id',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: 'person_id',
+      name: 'specie_id',
       referencedColumnName: 'id',
     },
   })
@@ -65,11 +62,11 @@ export class People {
   @JoinTable({
     name: 'people_vehicles',
     joinColumn: {
-      name: 'vehicle_id',
+      name: 'person_id',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: 'person_id',
+      name: 'vehicle_id',
       referencedColumnName: 'id',
     },
   })
@@ -79,11 +76,11 @@ export class People {
   @JoinTable({
     name: 'people_starships',
     joinColumn: {
-      name: 'starship_id',
+      name: 'person_id',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: 'person_id',
+      name: 'starship_id',
       referencedColumnName: 'id',
     },
   })

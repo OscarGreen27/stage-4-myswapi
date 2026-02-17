@@ -28,9 +28,6 @@ export class Film {
   @Column()
   release_date: Date;
 
-  @Column('text', { array: true, nullable: true })
-  images: string[];
-
   @ManyToMany(() => People, (character) => character.films)
   @JoinTable({
     name: 'films_characters',

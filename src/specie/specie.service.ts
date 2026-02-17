@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Specie } from './specie.entity';
 import { Repository } from 'typeorm';
@@ -17,7 +17,11 @@ export class SpecieService {
    * @returns array of entities specie sorted by id growing
    */
   async getAll(): Promise<Specie[]> {
-    return await this.specieRepository.find({ order: { id: 'ASC' }, relations: ['homeworld', 'people', 'films'] });
+    return await this.specieRepository.find({
+      order: { id: 'ASC' },
+      relations: ['homeworld', 'people', 'films'],
+      select: { homeworld: { id: true, name: true }, people: { id: true, name: true }, films: { id: true, title: true } },
+    });
   }
 
   /**
@@ -26,7 +30,11 @@ export class SpecieService {
    * @returns speci entity if id exist in database, null if no id-match
    */
   async getOne(id: number): Promise<Specie | null> {
-    return await this.specieRepository.findOne({ where: { id }, relations: ['homeworld', 'people', 'films'] });
+    return await this.specieRepository.findOne({
+      where: { id },
+      relations: ['homeworld', 'people', 'films'],
+      select: { homeworld: { id: true, name: true }, people: { id: true, name: true }, films: { id: true, title: true } },
+    });
   }
 
   /**
@@ -42,7 +50,8 @@ export class SpecieService {
       skip: skip,
       take: limit,
       order: { id: 'ASC' },
-      relations: ['homeworld', 'people', 'films'],
+      relations: ['homeworld', 'films'],
+      select: { homeworld: { id: true, name: true }, people: { id: true, name: true }, films: { id: true, title: true } },
     });
   }
 
@@ -86,42 +95,5 @@ export class SpecieService {
   async delete(id: number): Promise<boolean> {
     const result = await this.specieRepository.delete(id);
     return result.affected !== 0;
-  }
-
-  /**
-   * function adds image references to the specie images array
-   * @param id specie id
-   * @param url link to the picture
-   * @returns true if the link is added to the array, false if not
-   */
-  async saveImage(id: number, url: string) {
-    const specie = await this.specieRepository.findOneBy({ id });
-    if (!specie) {
-      throw new Error(`Specie with id ${id} does not exist!`);
-    }
-
-    if (!specie.images) {
-      specie.images = [];
-    }
-    specie.images.push(url);
-
-    const result = await this.specieRepository.update(id, specie);
-    if (!result.affected) {
-      throw new Error('Failed to add image link to database!');
-    }
-    return result.affected > 0;
-  }
-
-  async getImages(id: number) {
-    const exist = await this.itExist(id);
-    if (!exist) {
-      throw new NotFoundException(`Starship with id: ${id} is not exist!`);
-    }
-    const specie = await this.specieRepository.findOne({ where: { id }, select: ['images'] });
-    return specie?.images || [];
-  }
-
-  async itExist(id: number): Promise<boolean> {
-    return await this.specieRepository.exists({ where: { id } });
   }
 }

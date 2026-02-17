@@ -38,9 +38,6 @@ export class Specie {
   @Column()
   homeworld_id: number;
 
-  @Column('text', { array: true, nullable: true })
-  images: string[];
-
   @OneToOne(() => Planet)
   @JoinColumn({ name: 'homeworld_id' })
   homeworld: Planet;

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Vehicle } from './vehicle.entity';
 import { Repository } from 'typeorm';
@@ -17,7 +17,11 @@ export class VehicleService {
    * @returns array of entities vehicles sorted by id growing
    */
   async getAll(): Promise<Vehicle[]> {
-    return await this.vehicleRepository.find({ order: { id: 'ASC' }, relations: ['pilotes', 'films'] });
+    return await this.vehicleRepository.find({
+      order: { id: 'ASC' },
+      relations: ['pilotes', 'films'],
+      select: { pilotes: { id: true, name: true }, films: { id: true, title: true } },
+    });
   }
 
   /**
@@ -26,7 +30,11 @@ export class VehicleService {
    * @returns vehicle entity if id exist in database, null if no id-match
    */
   async getOne(id: number): Promise<Vehicle | null> {
-    return await this.vehicleRepository.findOne({ where: { id }, relations: ['pilotes', 'films'] });
+    return await this.vehicleRepository.findOne({
+      where: { id },
+      relations: ['pilotes', 'films'],
+      select: { pilotes: { id: true, name: true }, films: { id: true, title: true } },
+    });
   }
 
   /**
@@ -43,6 +51,7 @@ export class VehicleService {
       take: limit,
       order: { id: 'ASC' },
       relations: ['pilotes', 'films'],
+      select: { pilotes: { id: true, name: true }, films: { id: true, title: true } },
     });
   }
 
@@ -86,42 +95,5 @@ export class VehicleService {
   async delete(id: number): Promise<boolean> {
     const result = await this.vehicleRepository.delete(id);
     return result.affected !== 0;
-  }
-
-  /**
-   * function adds image references to the vehicles images array
-   * @param id vehicle id
-   * @param url link to the picture
-   * @returns true if the link is added to the array, false if not
-   */
-  async saveImage(id: number, url: string) {
-    const vehicle = await this.vehicleRepository.findOneBy({ id });
-    if (!vehicle) {
-      throw new Error(`Vehicle with id ${id} does not exist!`);
-    }
-
-    if (!vehicle.images) {
-      vehicle.images = [];
-    }
-    vehicle.images.push(url);
-
-    const result = await this.vehicleRepository.update(id, vehicle);
-    if (!result.affected) {
-      throw new Error('Failed to add image link to database!');
-    }
-    return result.affected > 0;
-  }
-
-  async getImages(id: number) {
-    const exist = await this.itExist(id);
-    if (!exist) {
-      throw new NotFoundException(`Starship with id: ${id} is not exist!`);
-    }
-    const vehicle = await this.vehicleRepository.findOne({ where: { id }, select: ['images'] });
-    return vehicle?.images || [];
-  }
-
-  async itExist(id: number): Promise<boolean> {
-    return await this.vehicleRepository.exists({ where: { id } });
   }
 }

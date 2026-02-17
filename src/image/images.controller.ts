@@ -4,7 +4,6 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam } from '@ne
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
 
-import { S3Service } from './s3.service';
 import { ImageService } from './images.service';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
@@ -15,10 +14,7 @@ import { RoleGuard } from 'src/auth/guards/role.guards';
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('image')
 export class ImageController {
-  constructor(
-    private readonly s3Service: S3Service,
-    private readonly imagesService: ImageService,
-  ) {}
+  constructor(private readonly imagesService: ImageService) {}
 
   @Post('/upload/:type/:id')
   @UseInterceptors(FileInterceptor('file', { storage: multer.memoryStorage() }))

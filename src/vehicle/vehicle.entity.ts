@@ -40,9 +40,6 @@ export class Vehicle {
   @Column()
   vehicle_class: string;
 
-  @Column('text', { array: true, nullable: true })
-  images: string[];
-
   @ManyToMany(() => People, (people) => people.vehicles)
   pilotes: People[];
 

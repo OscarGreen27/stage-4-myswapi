@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Planet } from './planet.entity';
 import { Repository } from 'typeorm';
@@ -17,7 +17,14 @@ export class PlanetService {
    * @returns array of entities planets sorted by id growing
    */
   async getAll(): Promise<Planet[]> {
-    return await this.planetRepository.find({ order: { id: 'ASC' }, relations: ['residents', 'films'] });
+    return await this.planetRepository.find({
+      order: { id: 'ASC' },
+      relations: ['residents', 'films'],
+      select: {
+        residents: { id: true, name: true },
+        films: { id: true, title: true },
+      },
+    });
   }
 
   /**
@@ -26,7 +33,14 @@ export class PlanetService {
    * @returns planet entity if id exist in database, null if no id-match
    */
   async getOne(id: number): Promise<Planet | null> {
-    return await this.planetRepository.findOne({ where: { id }, relations: ['residents', 'films'] });
+    return await this.planetRepository.findOne({
+      where: { id },
+      relations: ['residents', 'films'],
+      select: {
+        residents: { id: true, name: true },
+        films: { id: true, title: true },
+      },
+    });
   }
 
   /**
@@ -43,6 +57,10 @@ export class PlanetService {
       take: limit,
       order: { id: 'ASC' },
       relations: ['residents', 'films'],
+      select: {
+        residents: { id: true, name: true },
+        films: { id: true, title: true },
+      },
     });
   }
 
@@ -86,42 +104,5 @@ export class PlanetService {
   async delete(id: number) {
     const result = await this.planetRepository.delete(id);
     return result.affected !== 0;
-  }
-
-  /**
-   * function adds image references to the planets images array
-   * @param id planet id
-   * @param url link to the picture
-   * @returns true if the link is added to the array, false if not
-   */
-  async saveImage(id: number, url: string) {
-    const planet = await this.planetRepository.findOneBy({ id });
-    if (!planet) {
-      throw new Error(`Planet with id ${id} does not exist!`);
-    }
-
-    if (!planet.images) {
-      planet.images = [];
-    }
-    planet.images.push(url);
-
-    const result = await this.planetRepository.update(id, planet);
-    if (!result.affected) {
-      throw new Error('Failed to add image link to database!');
-    }
-    return result.affected > 0;
-  }
-
-  async getImages(id: number) {
-    const exist = await this.itExist(id);
-    if (!exist) {
-      throw new NotFoundException(`Starship with id: ${id} is not exist!`);
-    }
-    const planet = await this.planetRepository.findOne({ where: { id }, select: ['images'] });
-    return planet?.images || [];
-  }
-
-  async itExist(id: number): Promise<boolean> {
-    return await this.planetRepository.exists({ where: { id } });
   }
 }

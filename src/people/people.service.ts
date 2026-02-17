@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { People } from 'src/people/people.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -19,7 +19,17 @@ export class PeopleService {
    * @returns array of entities people sorted by id growing
    */
   async getAll(): Promise<People[]> {
-    return await this.peopleRepository.find({ order: { id: 'ASC' }, relations: ['homeworld', 'films', 'species', 'vehicles', 'starships'] });
+    return await this.peopleRepository.find({
+      order: { id: 'ASC' },
+      relations: ['homeworld', 'films', 'species', 'vehicles', 'starships'],
+      select: {
+        homeworld: { id: true, name: true },
+        films: { id: true, title: true },
+        species: { id: true, name: true },
+        vehicles: { id: true, name: true },
+        starships: { id: true, name: true },
+      },
+    });
   }
 
   /**
@@ -28,7 +38,17 @@ export class PeopleService {
    * @returns people entity if id exist in database, null if no id-match
    */
   async getOne(id: number): Promise<People | null> {
-    return await this.peopleRepository.findOne({ where: { id: id }, relations: ['films', 'homeworld', 'species', 'vehicles', 'starships'] });
+    return await this.peopleRepository.findOne({
+      where: { id: id },
+      relations: ['films', 'homeworld', 'species', 'vehicles', 'starships'],
+      select: {
+        homeworld: { id: true, name: true },
+        films: { id: true, title: true },
+        species: { id: true, name: true },
+        vehicles: { id: true, name: true },
+        starships: { id: true, name: true },
+      },
+    });
   }
 
   /**
@@ -45,6 +65,13 @@ export class PeopleService {
       take: limit,
       order: { id: 'ASC' },
       relations: ['homeworld', 'films', 'species', 'vehicles', 'starships'],
+      select: {
+        homeworld: { id: true, name: true },
+        films: { id: true, title: true },
+        species: { id: true, name: true },
+        vehicles: { id: true, name: true },
+        starships: { id: true, name: true },
+      },
     });
   }
 
@@ -87,42 +114,5 @@ export class PeopleService {
   async delete(id: number): Promise<boolean> {
     const result = await this.peopleRepository.delete(id);
     return result.affected !== 0;
-  }
-
-  /**
-   * function adds image references to the people images array
-   * @param id persone id
-   * @param url link to the picture
-   * @returns true if the link is added to the array, false if not
-   */
-  async saveImage(id: number, url: string) {
-    const persone = await this.peopleRepository.findOneBy({ id });
-    if (!persone) {
-      throw new Error(`Persone with id ${id} does not exist!`);
-    }
-
-    if (!persone.images) {
-      persone.images = [];
-    }
-    persone.images.push(url);
-
-    const result = await this.peopleRepository.update(id, persone);
-    if (!result.affected) {
-      throw new Error('Failed to add image link to database!');
-    }
-    return result.affected > 0;
-  }
-
-  async getImages(id: number) {
-    const exist = await this.itExist(id);
-    if (!exist) {
-      throw new NotFoundException(`Starship with id: ${id} is not exist!`);
-    }
-    const persone = await this.peopleRepository.findOne({ where: { id }, select: ['images'] });
-    return persone?.images || [];
-  }
-
-  async itExist(id: number): Promise<boolean> {
-    return await this.peopleRepository.exists({ where: { id } });
   }
 }

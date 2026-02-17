@@ -34,9 +34,6 @@ export class Planet {
   @Column()
   population: string;
 
-  @Column('text', { array: true, nullable: true })
-  images: string[];
-
   @ManyToMany(() => People)
   @JoinTable({
     name: 'planet_residents',

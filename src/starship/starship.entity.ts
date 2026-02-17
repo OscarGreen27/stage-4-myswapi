@@ -46,9 +46,6 @@ export class Starship {
   @Column()
   starship_class: string;
 
-  @Column('text', { array: true, nullable: true })
-  images: string[];
-
   @ManyToMany(() => People, (people) => people.starships)
   pilotes: People[];
 

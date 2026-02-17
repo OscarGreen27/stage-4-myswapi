@@ -10,7 +10,6 @@ export class FilmMapper {
       director: dto.director,
       producer: dto.producer,
       release_date: dto.release_date,
-      images: [],
     };
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Starship } from './starship.entity';
 import { Repository } from 'typeorm';
@@ -20,7 +20,11 @@ export class StarshipService {
    * @returns array of entities films sorted by id growing
    */
   async getAll(): Promise<Starship[]> {
-    return await this.starshipRepository.find({ order: { id: 'ASC' }, relations: ['films', 'pilotes'] });
+    return await this.starshipRepository.find({
+      order: { id: 'ASC' },
+      relations: ['films', 'pilotes'],
+      select: { films: { id: true, title: true }, pilotes: { id: true, name: true } },
+    });
   }
 
   /**
@@ -29,7 +33,11 @@ export class StarshipService {
    * @returns starship entity if id exist in database, null if no id-match
    */
   async getOne(id: number): Promise<Starship | null> {
-    return await this.starshipRepository.findOne({ where: { id }, relations: ['films', 'pilotes'] });
+    return await this.starshipRepository.findOne({
+      where: { id },
+      relations: ['films', 'pilotes'],
+      select: { films: { id: true, title: true }, pilotes: { id: true, name: true } },
+    });
   }
 
   /**
@@ -46,6 +54,7 @@ export class StarshipService {
       take: limit,
       order: { id: 'ASC' },
       relations: ['films', 'pilotes'],
+      select: { films: { id: true, title: true }, pilotes: { id: true, name: true } },
     });
   }
 
@@ -89,42 +98,5 @@ export class StarshipService {
   async delete(id: number): Promise<boolean> {
     const result = await this.starshipRepository.delete(id);
     return result.affected !== 0;
-  }
-
-  /**
-   * function adds image references to the starships images array
-   * @param id starship id
-   * @param url link to the picture
-   * @returns true if the link is added to the array, false if not
-   */
-  async saveImage(id: number, url: string) {
-    const starship = await this.starshipRepository.findOneBy({ id });
-    if (!starship) {
-      throw new Error(`Starship with id ${id} does not exist!`);
-    }
-
-    if (!starship.images) {
-      starship.images = [];
-    }
-    starship.images.push(url);
-
-    const result = await this.starshipRepository.update(id, starship);
-    if (!result.affected) {
-      throw new Error('Failed to add image link to database!');
-    }
-    return result.affected > 0;
-  }
-
-  async itExist(id: number): Promise<boolean> {
-    return await this.starshipRepository.exists({ where: { id } });
-  }
-
-  async getImages(id: number) {
-    const exist = await this.itExist(id);
-    if (!exist) {
-      throw new NotFoundException(`Starship with id: ${id} is not exist!`);
-    }
-    const starship = await this.starshipRepository.findOne({ where: { id }, select: ['images'] });
-    return starship?.images || [];
   }
 }
